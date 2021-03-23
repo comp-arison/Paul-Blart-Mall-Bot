@@ -11,12 +11,15 @@ Fix the bot slowdown (builds over time every time stocktick is called)
 Do something with the quiz statistics on the website
 Start looking for website domains
 Get this on a bot list website
+Make $give
 '''
+from replit import db
 import ast
 import discord
 import re
 import os
 import os.path
+os.environ['MPLCONFIGDIR'] = os.getcwd() + "/config/"
 from keep_alive import keep_alive
 from keep_alive import upcomm
 from keep_alive import downcomm
@@ -27,10 +30,13 @@ from keep_alive import triviawin
 from keep_alive import trivialoss
 from keep_alive import numofserversstat
 from PIL import Image, ImageFont, ImageDraw
+import matplotlib
+import matplotlib.pyplot as plt
 import emoji
 import threading
 import random as rand
 import asyncio
+matplotlib.use('Agg')
 
 quotesperpage = 15
 serverslist = []
@@ -72,6 +78,7 @@ with open('variables/blartcoindata.txt', 'r') as coindata:
 stockpattern = 1
 prevstockpattern = 0
 waitforpattern = 5
+
 def stocktick():
   global prevstockpattern
   global stockpercent
@@ -79,13 +86,14 @@ def stocktick():
   global stockpattern
   global waitforpattern
   global newprice
+  global graph
   threading.Timer(60.0, stocktick).start()
   with open('variables/blartcoindata.txt', 'r') as coindata:
     price = float(coindata.read().split("\n")[0])
     goodpercent = False
     while goodpercent == False:
       if stocknum == waitforpattern:
-        stocknum = 1
+        stocknum = 0
         waitforpattern = rand.randint(3, 6)
         prevstockpattern = stockpattern
         while prevstockpattern == stockpattern:
@@ -95,24 +103,43 @@ def stocktick():
       elif stockpattern == 2: #slow rise
         newprice = price + round(float(rand.randint(-50, 100) / 100), 2)
       elif stockpattern == 3: #fast rise
-        newprice = price + round(float(rand.randint(-50, 500) / 100), 2)
+        newprice = price + round(float(rand.randint(-50, 300) / 100), 2)
       elif stockpattern == 4: #slow fall
         newprice = price + round(float(rand.randint(-100, 50) / 100), 2)
-      elif stockpattern == 4: #fast fall
-        newprice = price + round(float(rand.randint(-500, -50) / 100), 2)
+      elif stockpattern == 5: #fast fall
+        newprice = price + round(float(rand.randint(-300, -50) / 100), 2)
       if newprice > 1 and newprice < 100 and stockpattern != prevstockpattern:
         goodpercent = True
         stockpercent = round((newprice / price) - 1, 4)
         price = newprice
-        stocknum = stocknum + 1
+        stocknum += 1
         with open('variables/blartcoindata.txt', 'w') as coindataw:
-          coindataw.write(str(price) + "\n" + str(stockpercent))
-        #with open('variables/blartcoingraphdata.txt', 'r') as graphdata:
-          #graphdatavar = graphdata.read()
-        #with open('variables/blartcoingraphdata.txt', 'w') as graphdataw:
-          #graphdataw.write(str(graphdatavar) + str(price) + "\n")
-        #plt.plot([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-        #plt.savefig('graph.png')'''
+          coindataw.write(str("{0:.2f}".format(price)) + "\n" + str("{0:.2f}".format(stockpercent)))
+        with open('variables/blartcoingraphdata.txt', 'r') as graphdata:
+          graphdatavar = str(graphdata.read())
+        with open('variables/blartcoingraphdata.txt', 'w') as graphdataw:
+          graphdataw.write(str(graphdatavar)[len(str(graphdatavar).split("\n")[0]) + 1:] + "\n" + str("{0:.2f}".format(price)))
+        with open('variables/blartcoingraphdata.txt', 'r') as graphdata:
+          graphdatavar = str(graphdata.read())
+        graphlist = [0]
+        for item in graphdatavar.split("\n"):
+          graphlist.append(float(item))
+        plt.clf()
+        plt.plot([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], graphlist)
+        plt.xlim(1, 10)
+        plt.savefig('graphline.png', transparent=True)
+        #this was way harder than it should have been
+        bgimg = Image.open("graphbg.png")
+        graphimg = Image.open("graphline.png")
+        graphimg = graphimg.crop((43, 58, 614, 428))
+        final2 = Image.new("RGBA", bgimg.size)
+        final2 = Image.alpha_composite(final2, bgimg.convert('RGBA'))
+        final2 = Image.alpha_composite(final2, graphimg.convert('RGBA'))
+        final2.save("graph.png")
+      else:
+        prevstockpattern = stockpattern
+        while prevstockpattern == stockpattern:
+          stockpattern = rand.randint(1, 5)
 stocktick()
 
 client = discord.Client()
@@ -125,6 +152,8 @@ async def on_ready():
     serverslist = ast.literal_eval(f.read())
     numofserversstat(len(serverslist))
   await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=str(len(serverslist)) + " servers. $help"))
+  channel = client.get_channel(823908777802989599)
+  await channel.purge()
 
 @client.event
 async def on_message(message):
@@ -142,6 +171,8 @@ async def on_message(message):
       return
     #if the message is from Paul, do nothing
     if message.author == client.user:
+      if message.channel == client.get_channel(823908777802989599):
+        db["graphurl"] = str(message.attachments[0].url)
       upcomm()
       try:
         if message.guild.get_member(client.user.id).display_name == "Paul Blart Mall Bot":
@@ -591,8 +622,8 @@ async def on_message(message):
             if int(message.content.split()[1]) + usercoinbalance > 100:
               await message.channel.send("You can only have up to 100 Blartcoins.")
               return
-            usermoneybalance = usermoneybalance + price * int(message.content.split()[1])
-            usercoinbalance = usercoinbalance - int(message.content.split()[1])
+            usermoneybalance = usermoneybalance - price * int(message.content.split()[1])
+            usercoinbalance = usercoinbalance + int(message.content.split()[1])
             balancelines[balancelines.index(line)] = str(message.author) + " " + str(usercoinbalance) + (" {0:.2f}").format(usermoneybalance)
             newbalance = ""
             for lines in balancelines[:-1]:
@@ -605,10 +636,13 @@ async def on_message(message):
               await message.channel.send(("You bought " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " for ${0:.2f}. You now have " + str(usercoinbalance) + " Blartcoin" + plural(usercoinbalance) + " and ${1:.2f}.").format(float(round(price, 4) * int(message.content.split()[1])), float(round(usermoneybalance, 2))))
             return
         if not str(message.author) in str(balancesvar):
-          with open("variables/userbalances.txt", "w") as userbalancesw:
-            userbalancesw.write(str(balancesvar) + str(message.author) + " " + message.content.split()[1] + (" {0:.2f}\n").format(0 - price * int(message.content.split()[1])))
-          await message.channel.send(("You bought " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " for ${0:.2f}. You now have " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " and -${0:.2f}.").format(round(price, 2) * int(message.content.split()[1])))
-    if message.content == "$stock" or message.content == "$stocks":
+          if int(message.content.split()[1]) > 100:
+            await message.channel.send("You can only have up to 100 Blartcoins.")
+          else:
+            with open("variables/userbalances.txt", "w") as userbalancesw:
+              userbalancesw.write(str(balancesvar) + str(message.author) + " " + message.content.split()[1] + (" {0:.2f}\n").format(0 - price * int(message.content.split()[1])))
+            await message.channel.send(("You bought " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " for ${0:.2f}. You now have " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " and -${0:.2f}.").format(round(price, 2) * int(message.content.split()[1])))
+    if message.content == "$stock" or message.content == "$stocks" or message.content == "$stonks" or message.content == "$stonk":
       with open('variables/blartcoindata.txt', 'r') as coindata:
         coindatavar = coindata.read()
         price = float(coindatavar.split("\n")[0])
@@ -620,7 +654,7 @@ async def on_message(message):
             usermoneybalance = float(line[len(str(message.author)):].split()[1])
             usercoinbalance = int(line[len(str(message.author)):].split()[0])
             if usermoneybalance < 0:
-              stockembed = discord.Embed(title="Stock Market", description=("Profits: ${0:.2f}\nBlartcoins: " + str(usercoinbalance)).format(round(usermoneybalance, 2) * -1), color=0x00ff00)
+              stockembed = discord.Embed(title="Stock Market", description=("Profits: -${0:.2f}\nBlartcoins: " + str(usercoinbalance)).format(round(usermoneybalance, 2) * -1), color=0x00ff00)
             else:
               stockembed = discord.Embed(title="Stock Market", description=("Profits: ${0:.2f}\nBlartcoins: " + str(usercoinbalance)).format(round(usermoneybalance, 2)), color=0x00ff00)
         if not str(message.author) in str(balancesvar):
@@ -632,28 +666,57 @@ async def on_message(message):
           stockembed.add_field(name="Blartcoin Value", value=("📉 {1:.2f}%🔽\nValue: ${0:.2f}").format(round(price, 2), stockpercent * 100), inline=False)
         else:
           stockembed.add_field(name="Blartcoin Value", value=("📈 {1:.2f}%🔼\nValue: ${0:.2f}").format(round(price, 2), stockpercent * 100), inline=False)
-        stockembed.set_footer(text="One tick happens every 60 seconds.\nThis message will remain live for 10 minutes after being sent.\nInformation provided by the Mall Jones Index.")
-        stockembed.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/823102022953074718/stock_market.png")
+        channel = client.get_channel(823908777802989599)
+        await channel.send(file=discord.File("graph.png"))
+        stockembed.set_image(url=db["graphurl"])
+        stockembed.set_footer(text="Time information will be available in the next tick.\nThis message will remain live for 10 minutes after being sent.")
+        #stockembed.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/823102022953074718/stock_market.png")
         stockmessage = await message.channel.send(embed=stockembed)
-        for second in range(1, 120):
-          await asyncio.sleep(5)
-          with open('variables/blartcoindata.txt', 'r') as coindata:
-            coindatavar = coindata.read()
-            price = float(coindatavar.split("\n")[0])
-            stockpercent = float(coindatavar.split("\n")[1])
-          if usermoneybalance < 0:
-            stockembed = discord.Embed(title="Stock Market", description=("Profits: ${0:.2f}\nBlartcoins: " + str(usercoinbalance)).format(round(usermoneybalance, 2) * -1), color=0x00ff00)
-          else:
-            stockembed = discord.Embed(title="Stock Market", description=("Profits: ${0:.2f}\nBlartcoins: " + str(usercoinbalance)).format(round(usermoneybalance, 2)), color=0x00ff00)
-          if stockpercent < 0:
-            stockembed.add_field(name="Blartcoin Value", value=("📉 {1:.2f}%🔽\nValue: ${0:.2f}").format(round(price, 2), stockpercent * 100), inline=False)
-          else:
-            stockembed.add_field(name="Blartcoin Value", value=("📈 {1:.2f}%🔼\nValue: ${0:.2f}").format(round(price, 2), stockpercent * 100), inline=False)
-          stockembed.set_footer(text="One tick happens every 60 seconds.\nThis message will remain live for 10 minutes after being sent.\nInformation provided by the Mall Jones Index.")
-          stockembed.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/823102022953074718/stock_market.png")
-          await stockmessage.edit(embed=stockembed)
-        await asyncio.sleep(2)
-        stockembed.set_footer(text="This message is no longer live. Do $stock for a live reading.\nInformation provided by the Mall Jones Index.")
+        with open('variables/blartcoingraphdata.txt', 'r') as graphdata:
+          prevgraphdata = str(graphdata.read())
+        seconds = "Time information will be available in the next tick."
+        secnum = 60
+        countdown = False
+        for second in range(0, 120):
+          with open('variables/blartcoingraphdata.txt', 'r') as graphdata:
+            prevgraphdata = str(graphdata.read())
+            await asyncio.sleep(5)
+          with open('variables/blartcoingraphdata.txt', 'r') as graphdata:
+            newgraphdata = str(graphdata.read())
+            if countdown == True:
+              secnum = secnum - 5
+              if secnum == 0:
+                secnum = 60
+              seconds = "Next tick in " + str(secnum) + " seconds."
+            if prevgraphdata != newgraphdata:
+              countdown = True
+              secnum = 60
+              seconds = "Next tick in " + str(secnum) + " seconds."
+              with open('variables/blartcoindata.txt', 'r') as coindata:
+                coindatavar = coindata.read()
+                price = float(coindatavar.split("\n")[0])
+                stockpercent = float(coindatavar.split("\n")[1])
+              if usermoneybalance < 0:
+                stockembed = discord.Embed(title="Stock Market", description=("Profits: ${0:.2f}\nBlartcoins: " + str(usercoinbalance)).format(round(usermoneybalance, 2) * -1), color=0x00ff00)
+              else:
+                stockembed = discord.Embed(title="Stock Market", description=("Profits: ${0:.2f}\nBlartcoins: " + str(usercoinbalance)).format(round(usermoneybalance, 2)), color=0x00ff00)
+              if stockpercent < 0:
+                stockembed.add_field(name="Blartcoin Value", value=("📉 {1:.2f}%🔽\nValue: ${0:.2f}").format(round(price, 2), stockpercent * 100), inline=False)
+              else:
+                stockembed.add_field(name="Blartcoin Value", value=("📈 {1:.2f}%🔼\nValue: ${0:.2f}").format(round(price, 2), stockpercent * 100), inline=False)
+              stockembed.set_footer(text=seconds + "\nThis message will remain live for 10 minutes after being sent.")
+              #stockembed.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/823102022953074718/stock_market.png")
+              channel = client.get_channel(823908777802989599)
+              await channel.send(file=discord.File("graph.png"))
+              stockembed.set_image(url=db["graphurl"])
+              await stockmessage.edit(embed=stockembed)
+            else:
+              stockembed.set_footer(text=seconds + "\nThis message will remain live for 10 minutes after being sent.")
+              await stockmessage.edit(embed=stockembed)
+        await asyncio.sleep(5)
+        stockembed.set_footer(text="This message is no longer live. Do $stock for a live reading.")
+        for messages in channel:
+          await messages.delete(messages)
         await stockmessage.edit(embed=stockembed)
     if message.content.startswith("$sell "):
       with open('variables/blartcoindata.txt', 'r') as coindata:
@@ -782,8 +845,10 @@ async def on_message(message):
             placeposition = "th"
           embedVar.set_footer(text="You are in " + str(userplace) + placeposition + " place out of " + str(len(leaderboardnames)) + " people.")
       await message.channel.send(embed=embedVar)
-    if message.content == "$test":
-      await message.channel.send(file=discord.File('graph.png'))
+    if message.content == "$buy":
+      await message.channel.send("You gotta tell me how many Blartcoins you want to buy.")
+    if message.content == "$sell":
+      await message.channel.send("You gotta tell me how many Blartcoins you want to sell.")
   #except:
   #  pass
 
