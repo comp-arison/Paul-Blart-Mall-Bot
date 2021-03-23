@@ -110,9 +110,8 @@ def get_file(filename):  # pragma: no cover
     except IOError as exc:
         return str(exc)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST', 'HEAD', 'PUT', 'CONNECT', 'OPTIONS', 'TRACE', 'PATH'])
 def home():
-  #return get_file('website/index.html')
 	return render_template(
 		'index.html',  # Template file path, starting from the templates folder. 
 	).format(commandsresponded=commandsresponded, plural=plural, latestquote=latestquote, quotewins=quotewins, quotelosses=quotelosses, quotewinplural=quotewinplural, quotelossplural=quotelossplural, triviawins=triviawins, trivialosses=trivialosses, triviawinplural=triviawinplural, trivialossplural=trivialossplural, numofservers=serversnum)
@@ -122,5 +121,5 @@ def run():
   app.run(host='0.0.0.0',port=8080)
 
 def keep_alive():
-    t = Thread(target=run)
-    t.start()
+  t = Thread(target=run)
+  t.start()
