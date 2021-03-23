@@ -12,6 +12,7 @@ Do something with the quiz statistics on the website
 Start looking for website domains
 Get this on a bot list website
 Make $give
+Balance the stock pices (too cheap all the time)
 '''
 from replit import db
 import ast

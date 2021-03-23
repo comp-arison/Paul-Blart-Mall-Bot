@@ -1,3 +1,4 @@
+from replit import db
 import ast
 from flask import Flask, render_template
 from threading import Thread
@@ -8,17 +9,23 @@ app = Flask(  # Create a flask app
 	static_folder='assets'  # Name of directory for static files
 )
 
+def plural(number):
+  if int(number) == 1:
+    return ""
+  else:
+    return "s"
+
 commandsresponded = 0
-plural = "s"
+commplural = "s"
 latestquote = "nothing."
-quotewins = 0
-quotelosses = 0
-quotewinplural = "s"
-quotelossplural = "s"
-triviawins = 0
-trivialosses = 0
-triviawinplural = "s"
-trivialossplural = "s"
+quotewins = db["quotewins"]
+quotelosses = db["quotelosses"]
+quotewinplural = plural(quotewins)
+quotelossplural = plural(quotelosses)
+triviawins = db["triviawins"]
+trivialosses = db["trivialosses"]
+triviawinplural = plural(triviawins)
+trivialossplural = plural(trivialosses)
 serversnum = 0
 
 with open('variables/commandsresponded.txt', 'r') as f: #If the file is a `.env` file put `.env` in the first string
@@ -56,39 +63,23 @@ def setlatestquote(quote):
 
 def quotewin():
   global quotewins
-  global quotewinplural
   quotewins = quotewins + 1
-  if quotewins == 1:
-    quotewinplural = ""
-  else:
-    quotewinplural = "s"
+  db["quotewins"] = quotewins
 
 def quoteloss():
   global quotelosses
-  global quotelossplural
   quotelosses = quotelosses + 1
-  if quotelosses == 1:
-    quotelossplural = ""
-  else:
-    quotelossplural = "s"
+  db["quotelosses"] = quotelosses
 
 def triviawin():
   global triviawins
-  global triviawinplural
   triviawins = triviawins + 1
-  if triviawins == 1:
-    triviawinplural = ""
-  else:
-    triviawinplural = "s"
+  db["triviawins"] = triviawins
 
 def trivialoss():
   global trivialosses
-  global trivialossplural
   trivialosses = trivialosses + 1
-  if trivialosses == 1:
-    trivialossplural = ""
-  else:
-    trivialossplural = "s"
+  db["trivialosses"] = trivialosses
 
 def numofserversstat(num):
   global serversnum
@@ -114,7 +105,7 @@ def get_file(filename):  # pragma: no cover
 def home():
 	return render_template(
 		'index.html',  # Template file path, starting from the templates folder. 
-	).format(commandsresponded=commandsresponded, plural=plural, latestquote=latestquote, quotewins=quotewins, quotelosses=quotelosses, quotewinplural=quotewinplural, quotelossplural=quotelossplural, triviawins=triviawins, trivialosses=trivialosses, triviawinplural=triviawinplural, trivialossplural=trivialossplural, numofservers=serversnum)
+	).format(commandsresponded=commandsresponded, plural=commplural, latestquote=latestquote, quotewins=quotewins, quotelosses=quotelosses, quotewinplural=quotewinplural, quotelossplural=quotelossplural, triviawins=triviawins, trivialosses=trivialosses, triviawinplural=triviawinplural, trivialossplural=trivialossplural, numofservers=serversnum)
 
 
 def run():
