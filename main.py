@@ -12,6 +12,7 @@ Do something with the quiz statistics on the website
 Start looking for website domains
 Get this on a bot list website
 Make $give
+Fix the website (this should help: https://replit.com/talk/ask/Matplotlib-causing-Flask-to-not-run/126931)
 '''
 import ast
 import discord
@@ -126,7 +127,15 @@ def stocktick():
         plt.clf()
         plt.plot([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], graphlist)
         plt.xlim(1, 10)
-        plt.savefig('graph.png')
+        plt.savefig('graphline.png', transparent=True)
+        #this was way harder than it should have been
+        bgimg = Image.open("graphbg.png")
+        graphimg = Image.open("graphline.png")
+        graphimg = graphimg.crop((43, 58, 577, 428))
+        final2 = Image.new("RGBA", bgimg.size)
+        final2 = Image.alpha_composite(final2, bgimg.convert('RGBA'))
+        final2 = Image.alpha_composite(final2, graphimg.convert('RGBA'))
+        final2.save("graph.png")
 stocktick()
 
 client = discord.Client()
@@ -665,7 +674,7 @@ async def on_message(message):
           else:
             stockembed = discord.Embed(title="Stock Market", description=("Profits: ${0:.2f}\nBlartcoins: " + str(usercoinbalance)).format(round(usermoneybalance, 2)), color=0x00ff00)
           if stockpercent < 0:
-            stockembed.add_field(name="Blartcoin Value", value=("📉 {1:.2f}%🔽\nValue: -${0:.2f}").format(round(price, 2), stockpercent * 100), inline=False)
+            stockembed.add_field(name="Blartcoin Value", value=("📉 {1:.2f}%🔽\nValue: ${0:.2f}").format(round(price, 2), stockpercent * 100), inline=False)
           else:
             stockembed.add_field(name="Blartcoin Value", value=("📈 {1:.2f}%🔼\nValue: ${0:.2f}").format(round(price, 2), stockpercent * 100), inline=False)
           stockembed.set_footer(text="One tick happens every 60 seconds.\nThis message will remain live for 10 minutes after being sent.\nInformation provided by the Mall Jones Index.")
