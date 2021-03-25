@@ -10,6 +10,7 @@ TODO:
 Start looking for website domains
 Get this on a bot list website
 Make $give
+Make a store to spend the virtual money
 '''
 from replit import db
 import ast
@@ -42,8 +43,8 @@ letterimg = ""
 quotes = ["I don't drink.", "Yello-ha!", "Windershins!", "FOOT LOCKER!", "I WILL CRAWL INSIDE YOU AND LAY EGGS LIKE A BABY SPIDER!", "I don't care, I'm going double parm.", "Not today, death!", "The mind is the only weapon that doesn't need a holster.", "Safety never takes a holiday.", "Chicken chow LANE?", "Help someone today.", "No one wins with a headbutt.", "I know a lot about sharks.", '''I'll meet you on the corner of "ne" and "ver".''', "Ladies? Problem. What's the genesis?", "I do have the authority to make a citizen's arrest.", "This lemonade is insane!", "Hold the mayo.", "Veck: I would love a happy meal.", "Pahud: Peanut Blart and Jelly!", "Donna: Robocop ain't real.", "Always bet on Blart.", "That's one brown banana.", "Leon: Were you serious about that happy meal?", "Hey. Paul Blart. Ten-year veteran.", "Take a dip!", "We live as we dream. Alone.", "It's a bad day to be bad people.", "Knot-jump!", "I'm a lone cowboy.", "I believe in magic!", "Veck: Give me a gun.", "Scuba Dooby-Doo.", "Suck on that!", "Amy: Go to hell."]
 quotemovies = [1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1]
 
-paulwords = ["paul", "palm", "qualm", "yawn", "pail", "pale", "pom", "tom", "god", "tod", "scott", "pre", "shit", "pie", "pon", "price", "nigg", "poop", "tracle", "tracl", "pol", "dick", "pussy", "au", "nathan", "soul", "awe", "piss", "pant", "david", "jacob", "robert", "rachel"]
-blartwords = ["blart", "card", "earth", "cart", "dart", "fart", "mart", "part", "heart", "dark", "start", "narc", "lard", "thwart", "wart", "guard", "car", "bart", "blurt", "blur", "burn", "art", "hard", "nox", "brew", "bath", "wat", "bout", "bitch", "bare", "drown", "bruh", "break", "fort", "block", "blown", "blow", "bet", "hulk", "boehm", "back", "tard", "be", "stock", "bit"]
+paulwords = ["paul", "palm", "qualm", "yawn", "pail", "pale", "pom", "tom", "god", "tod", "scott", "pre", "shit", "pie", "pon", "price", "nigg", "poop", "tracle", "tracl", "pol", "dick", "pussy", "au", "nathan", "soul", "awe", "piss", "pant", "david", "jacob", "robert", "rachel", "jay"]
+blartwords = ["blart", "card", "earth", "cart", "dart", "fart", "mart", "part", "heart", "dark", "start", "narc", "lard", "thwart", "wart", "guard", "car", "bart", "blurt", "blur", "burn", "art", "hard", "nox", "brew", "bath", "wat", "bout", "bitch", "bare", "drown", "bruh", "break", "fort", "block", "blown", "blow", "bet", "hulk", "boehm", "back", "tard", "be", "stock", "bit", "swan"]
 mallwords = ["mall", "call", "fall", "moon", "ball", "tall", "small", "hall", "jail", "lol", "wall", "yall", "y'all", "all", "odd", "man", "jar", "mell", "ass", "mean", "meal", "troll", "doll", "wack", "damn", "mark", "dow"]
 copwords = ["cop", "pop", "mop", "bot", "top", "bop", "fap", "gap", "hop", "cat", "wap", "cap", "cough", "con", "lot", "fuck", "kill", "corp", "cum", "cun", "come", "com", "keep", "show", "clip", "cock"]
 
@@ -188,13 +189,13 @@ async def on_message(message):
       embedVar.set_author(name="Click to visit my website.", url="https://paul-blart-mall-bot.nathanboehm.repl.co/", icon_url="https://cdn.discordapp.com/attachments/529558484208058370/818986642483183665/icon.png")
       embedVar.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/818990652854370314/help_menu.png")
       embedVar.add_field(name="$hello", value="I say hi back.", inline=False)
-      embedVar.add_field(name="$quote", value="I say a wacky quote from one of my movies. Put a number after that and I'll say that quote from the server's quote list.", inline=False)
+      embedVar.add_field(name="$quote {number (optional)}", value="I say a wacky quote from one of my movies. Put a number after that and I'll say that quote from the server's quote list.", inline=False)
       embedVar.add_field(name="$quotelist or $quotes", value="I give you a list of all the quotes this server has unlocked.", inline=False)
       embedVar.add_field(name="$resetquotes", value="I reset the quote list for this server. You need to be an administrator for this.", inline=False)
       embedVar.add_field(name="$quiz", value="Test your knowledge of Paul Blart quotes.", inline=False)
-      embedVar.add_field(name="$blartify", value="Say something and I'll Blartify it.", inline=False)
+      embedVar.add_field(name="$blartify [text]", value="Say something and I'll Blartify it.", inline=False)
       embedVar.add_field(name="$watch", value="I give you links to watch my movies.", inline=False)
-      embedVar.add_field(name="$arrest", value="Say a name and I'll arrest 'em.", inline=False)
+      embedVar.add_field(name="$arrest [user]", value="Say a name and I'll arrest 'em.", inline=False)
       embedVar.add_field(name="$trivia", value="Test your knowledge of the Paul Blart universe.", inline=False)
       embedVar.add_field(name="$citation [Written to]; [Reason]; [Penalty]", value="Prints out a citation to those evil doers.", inline=False)
       embedVar.add_field(name="$meme [text]", value="Generates a dvd cover with the text you say. $help meme for more information.", inline=False)
@@ -250,7 +251,7 @@ async def on_message(message):
     #if the message starts with $quote, say a random quote (or say the quote the user specifies)
     if message.content == "$quote" or message.content.startswith("$quote "):
       if len(message.content.split()) > 1:
-        if type(int(message.content.split()[1])) != int:
+        if message.content.split()[1].isdigit() == False:
           await message.channel.send("That's not a valid number, dummy!")
           return
         elif int(message.content.split()[1]) < 1 or int(message.content.split()[1]) > len(quotes):
@@ -341,8 +342,18 @@ async def on_message(message):
           quoteloss()
         downcomm()
     if message.content.startswith("$blartify"):
-      sentence = ""
+      virginoftheblartification = "" #this is the best variable i've ever named
       for word in message.content.split()[1:]:
+        print(word)
+        mentionified = False
+        for mention in message.mentions:
+          if word == str(mention.mention).replace("!", ""):
+            virginoftheblartification += str(mention.display_name) + " "
+            mentionified = True
+        if mentionified == False:
+          virginoftheblartification += word + " "
+      sentence = ""
+      for word in virginoftheblartification.split():
         blarted = False
         for paul in paulwords:
           if paul in word.lower():
@@ -610,15 +621,27 @@ async def on_message(message):
       with open('variables/userbalances.txt', 'r') as userbalances:
         balancesvar = userbalances.read()
         balancelines = balancesvar.split("\n")
+        if message.content.split()[1] == "max":
+          buying = 100
+        if message.content.split()[1].isdigit() == False and message.content.split()[1] != "max":
+          await message.channel.send("Please enter a valid number.")
+          return
+        if message.content.split()[1].isdigit() and int(message.content.split()[1]) < 0:
+          await message.channel.send("Very funny.")
+          return
         for line in balancesvar.split("\n"):
           if str(message.author) == str(line[:len(str(message.author))]):
             usermoneybalance = float(line[len(str(message.author)):].split()[1])
             usercoinbalance = int(line[len(str(message.author)):].split()[0])
-            if int(message.content.split()[1]) + usercoinbalance > 100:
+            if message.content.split()[1] == "max":
+              buying = 100 - usercoinbalance
+            else:
+              buying = int(message.content.split()[1])
+            if int(buying) + usercoinbalance > 100:
               await message.channel.send("You can only have up to 100 Blartcoins.")
               return
-            usermoneybalance = usermoneybalance - price * int(message.content.split()[1]) * 1.05
-            usercoinbalance = usercoinbalance + int(message.content.split()[1])
+            usermoneybalance = usermoneybalance - price * int(buying) * 1.10
+            usercoinbalance = usercoinbalance + int(buying)
             balancelines[balancelines.index(line)] = str(message.author) + " " + str(usercoinbalance) + (" {0:.2f}").format(usermoneybalance)
             newbalance = ""
             for lines in balancelines[:-1]:
@@ -626,17 +649,17 @@ async def on_message(message):
             with open("variables/userbalances.txt", "w") as userbalancesw:
               userbalancesw.write(newbalance)
             if usermoneybalance < 0:
-              await message.channel.send(("You bought " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " for ${0:.2f}. You now have " + str(usercoinbalance) + " Blartcoin" + plural(usercoinbalance) + " and -${1:.2f}.").format(float(round(price, 4) * int(message.content.split()[1]) * 1.05), float(round(usermoneybalance * -1, 2))))
+              await message.channel.send(("You bought " + str(buying) + " Blartcoin" + plural(buying) + " for ${0:.2f}. You now have " + str(usercoinbalance) + " Blartcoin" + plural(usercoinbalance) + " and -${1:.2f}.").format(float(round(price, 4) * int(buying) * 1.10), float(round(usermoneybalance * -1, 2))))
             else:
-              await message.channel.send(("You bought " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " for ${0:.2f}. You now have " + str(usercoinbalance) + " Blartcoin" + plural(usercoinbalance) + " and ${1:.2f}.").format(float(round(price, 4) * int(message.content.split()[1]) * 1.05), float(round(usermoneybalance, 2))))
+              await message.channel.send(("You bought " + str(buying) + " Blartcoin" + plural(buying) + " for ${0:.2f}. You now have " + str(usercoinbalance) + " Blartcoin" + plural(usercoinbalance) + " and ${1:.2f}.").format(float(round(price, 4) * int(buying) * 1.10), float(round(usermoneybalance, 2))))
             return
         if not str(message.author) in str(balancesvar):
           if int(message.content.split()[1]) > 100:
             await message.channel.send("You can only have up to 100 Blartcoins.")
           else:
             with open("variables/userbalances.txt", "w") as userbalancesw:
-              userbalancesw.write(str(balancesvar) + str(message.author) + " " + message.content.split()[1] + (" {0:.2f}\n").format(0 - price * int(message.content.split()[1]) * 1.05))
-            await message.channel.send(("You bought " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " for ${0:.2f}. You now have " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " and -${0:.2f}.").format(round(price, 2) * int(message.content.split()[1])))
+              userbalancesw.write(str(balancesvar) + str(message.author) + " " + message.content.split()[1] + (" {0:.2f}\n").format(0 - price * int(message.content.split()[1]) * 1.10))
+            await message.channel.send(("You bought " + str(buying) + " Blartcoin" + plural(str(buying)) + " for ${0:.2f}. You now have " + str(buying) + " Blartcoin" + plural(str(buying)) + " and -${0:.2f}.").format(round(price, 2) * int(message.content.split()[1])))
     if message.content == "$stock" or message.content == "$stocks" or message.content == "$stonks" or message.content == "$stonk":
       with open('variables/blartcoindata.txt', 'r') as coindata:
         coindatavar = coindata.read()
@@ -664,7 +687,7 @@ async def on_message(message):
         channel = client.get_channel(823908777802989599)
         await channel.send(file=discord.File("graph.png"))
         stockembed.set_image(url=db["graphurl"])
-        stockembed.set_footer(text="Time information will be available in the next tick.\nThis message will remain live for 10 minutes after being sent.\nBuying Blartcoins has a 5% surcharge.")
+        stockembed.set_footer(text="Time information will be available in the next tick.\nThis message will remain live for 10 minutes after being sent.\nBuying Blartcoins has a 10% surcharge.")
         #stockembed.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/823102022953074718/stock_market.png")
         stockmessage = await message.channel.send(embed=stockembed)
         with open('variables/blartcoingraphdata.txt', 'r') as graphdata:
@@ -706,32 +729,42 @@ async def on_message(message):
               stockembed.set_image(url=db["graphurl"])
               await stockmessage.edit(embed=stockembed)
             else:
-              stockembed.set_footer(text=seconds + "\nThis message will remain live for 10 minutes after being sent.\nBuying Blartcoins has a 5% surcharge.")
+              stockembed.set_footer(text=seconds + "\nThis message will remain live for 10 minutes after being sent.\nBuying Blartcoins has a 10% surcharge.")
               await stockmessage.edit(embed=stockembed)
         await asyncio.sleep(5)
-        stockembed.set_footer(text="This message is no longer live. Do $stock for a live reading.\nBuying Blartcoins has a 5% surcharge.")
-        channel = client.get_channel(823908777802989599)
-        await channel.purge()
+        stockembed.set_footer(text="This message is no longer live. Do $stock for a live reading.\nBuying Blartcoins has a 10% surcharge.")
         await stockmessage.edit(embed=stockembed)
     if message.content.startswith("$sell "):
+      if message.content.split()[1].isdigit() == False and message.content.split()[1] != "max":
+        await message.channel.send("Please enter a valid number.")
+        return
+      if message.content.split()[1].isdigit() and int(message.content.split()[1]) < 0:
+        await message.channel.send("Very funny.")
+        return
       with open('variables/blartcoindata.txt', 'r') as coindata:
         coindatavar = coindata.read()
         price = float(coindatavar.split("\n")[0])
       with open('variables/userbalances.txt', 'r') as userbalances:
         balancesvar = userbalances.read()
         balancelines = balancesvar.split("\n")
+        if message.content.split()[1] == "max":
+          selling = 0
+        else:
+          selling = int(message.content.split()[1])
         for line in balancesvar.split("\n"):
           if str(message.author) == str(line[:len(str(message.author))]):
             usermoneybalance = float(line[len(str(message.author)):].split()[1])
             usercoinbalance = int(line[len(str(message.author)):].split()[0])
-            if usercoinbalance < int(message.content.split()[1]):
+            if message.content.split()[1] == "max":
+              selling = usercoinbalance
+            if usercoinbalance < int(selling):
               if usercoinbalance == 0:
                 await message.channel.send("You don't have any Blartcoins.")
               else:
                 await message.channel.send("You only have " + str(usercoinbalance) + " Blartcoins.")
               return
-            usermoneybalance = usermoneybalance + price * int(message.content.split()[1])
-            usercoinbalance = usercoinbalance - int(message.content.split()[1])
+            usermoneybalance = usermoneybalance + price * int(selling)
+            usercoinbalance = usercoinbalance - int(selling)
             balancelines[balancelines.index(line)] = str(message.author) + " " + str(usercoinbalance) + (" {0:.2f}").format(usermoneybalance)
             newbalance = ""
             for lines in balancelines[:-1]:
@@ -739,9 +772,9 @@ async def on_message(message):
             with open("variables/userbalances.txt", "w") as userbalancesw:
               userbalancesw.write(newbalance)
             if usermoneybalance < 0:
-              await message.channel.send(("You sold " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " for ${0:.2f}. You now have " + str(usercoinbalance) + " Blartcoin" + plural(usercoinbalance) + " and -${1:.2f}.").format(round(price, 2) * int(message.content.split()[1]), round(usermoneybalance, 2) * -1))
+              await message.channel.send(("You sold " + str(selling) + " Blartcoin" + plural(selling) + " for ${0:.2f}. You now have " + str(usercoinbalance) + " Blartcoin" + plural(usercoinbalance) + " and -${1:.2f}.").format(round(price, 2) * int(selling), round(usermoneybalance, 2) * -1))
             else:
-              await message.channel.send(("You sold " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " for ${0:.2f}. You now have " + str(usercoinbalance) + " Blartcoin" + plural(usercoinbalance) + " and ${1:.2f}.").format(round(price, 2) * int(message.content.split()[1]), round(usermoneybalance, 2)))
+              await message.channel.send(("You sold " + str(selling) + " Blartcoin" + plural(selling) + " for ${0:.2f}. You now have " + str(usercoinbalance) + " Blartcoin" + plural(usercoinbalance) + " and ${1:.2f}.").format(round(price, 2) * int(selling), round(usermoneybalance, 2)))
             return
         if not str(message.author) in str(balancesvar):
           await message.channel.send("You don't have any Blartcoins.")
@@ -801,10 +834,11 @@ async def on_message(message):
       embedVar.add_field(name="$buy [ammount]", value="Purchaces Blartcoins for the given price. (You can buy them even if you don't have enough money.)", inline=False)
       embedVar.add_field(name="$sell [ammount]", value="Sells your Blartcoins at the given price.", inline=False)
       embedVar.add_field(name="$mine", value="Solve a math problem, get a Blartcoin!", inline=False)
-      embedVar.add_field(name="$bal or $balance", value="Tells you how many Blartcoins and how much money you have.", inline=False)
+      embedVar.add_field(name="$give [user] [ammount]", value="Gives Blartcoins to the person you specify.", inline=False)
       embedVar.add_field(name="$bankruptcy", value="Resets your balance. It'll ask for confirmation.", inline=False)
+      embedVar.add_field(name="$bal or $balance", value="Tells you how many Blartcoins and how much money you have.", inline=False)
       embedVar.add_field(name="$leaderboard or $lb", value="See who is better than you.", inline=False)
-      embedVar.set_footer(text="This is in beta. Expect minor to major glitches and changes.")
+      embedVar.set_footer(text='Tip: You can say "max" instead of an ammount to buy or sell as much as you can.')
       await message.channel.send(embed=embedVar)
     if message.content == "$leaderboard" or message.content == "$lb":
       embedVar = discord.Embed(title="Stock Market Leader Board", description="See who is better than you.", color=0x00ff00)
@@ -863,7 +897,7 @@ async def on_message(message):
       randans3 = rand.randint(1, 99)
       while randans3 == answer:
         randans3 = rand.randint(1, 99)
-      answers = [answer, rand.randint(1, 99), rand.randint(1, 99), rand.randint(1, 99)]
+      answers = [answer, randans1, randans2, randans3]
       answerrand = [answers.pop(rand.randint(0, 3)), answers.pop(rand.randint(0, 2)), answers.pop(rand.randint(0, 1)), answers.pop(0)]
       embedVar = discord.Embed(title=str("Solve for X: "), description="\n" + problem + "\nA. " + str(answerrand[0]) + "\nB. " + str(answerrand[1]) + "\nC. " + str(answerrand[2]) + "\nD. " + str(answerrand[3]), color=0x4287f5)
       msg = await message.channel.send(embed=embedVar)
@@ -908,7 +942,81 @@ async def on_message(message):
         downcomm()
     if "i apologize" in message.content.lower() or "i'm sorry" in message.content.lower() or "im sorry" in message.content.lower():
       await message.channel.send("That's the spirit!")
-        
+    if message.content.startswith("$give "):
+      with open('variables/userbalances.txt', 'r') as userbalances:
+        if message.content.split()[2].isdigit() == False and message.content.split()[2] != "max":
+          await message.channel.send("Please enter a valid number.")
+          return
+        if len(message.mentions) != 0:
+          await message.channel.send("That's not how that works.")
+          return
+        balancesvar = userbalances.read()
+        balancelines = balancesvar.split("\n")
+        ammount = 0
+        senderinlist = False
+        sendeeinlist = False
+        for line in balancesvar.split("\n"):
+          if str(message.author) == str(line[:len(str(message.author))]):
+            senderbal = int(line[len(str(message.author)):].split()[0])
+            if str(message.content.split()[2]) == "max":
+              ammount = senderbal
+            else:
+              ammount = int(message.content.split()[2])
+              if ammount < 0:
+                img = Image.open("blankcitation.png")
+                font = ImageFont.truetype("timesnewroman.ttf", 35)
+                draw = ImageDraw.Draw(img)
+                draw.text((188, 104), str(str(message.author)[:-5]), (0, 0, 0), font=font)
+                draw.text((145, 195), " Attempted theft.", (0, 0, 0), font=font)
+                draw.text((145, 288), " I've got my eyes on you. >:|", (0, 0, 0), font=font)
+                img.save("citation.png")
+                await message.channel.send(file=discord.File("citation.png"))
+                return
+            sendermoneybalance = float(line[len(str(message.author)):].split()[1])
+            senderindex = balancelines.index(line)
+            senderinlist = True
+          if str(message.mentions[0]) == str(line[:len(str(message.mentions[0]))]):
+            sendeebal = int(line[len(str(message.mentions[0])):].split()[0])
+            sendeemoneybalance = float(line[len(str(message.mentions[0])):].split()[1])
+            sendeeindex = balancelines.index(line)
+            sendeeinlist = True
+        if senderinlist == True and sendeeinlist == True:
+          if senderbal == 0:
+            await message.channel.send("You don't have any Blartcoins.")
+            return
+          if sendeebal + ammount > 100:
+            await message.channel.send("The recipient has " + str(sendeebal) + " Blartcoins. You can only have up to 100 Blartcoins.")
+            return
+          if senderbal - ammount < 0:
+            await message.channel.send("You only have " + str(senderbal) + " Blartcoins.")
+            return
+          senderbal = senderbal - ammount
+          sendeebal = sendeebal + ammount
+          balancelines[sendeeindex] = str(message.mentions[0]) + " " + str(sendeebal) + (" {0:.2f}").format(sendeemoneybalance)
+          balancelines[senderindex] = str(message.author) + " " + str(senderbal) + (" {0:.2f}").format(sendermoneybalance)
+          newbalance = ""
+          for lines in balancelines[:-1]:
+            newbalance = newbalance + lines + "\n"
+          with open("variables/userbalances.txt", "w") as userbalancesw:
+            userbalancesw.write(newbalance)
+          await message.channel.send("You gave " + str(message.mentions[0])[:-5] + " " + str(ammount) + " Blartcoin" + plural(ammount) + ". You now have " + str(senderbal) + " Blartcoin" + plural(senderbal) + " and " + str(message.mentions[0])[:-5] + " now has " + str(sendeebal) + " Blartcoin" + plural(sendeebal) + ".")
+        if not str(message.author) in balancesvar:
+          await message.channel.send("You don't have any Blartcoins.")
+          return
+        if not str(message.mentions[0]) in balancesvar and senderbal - ammount >= 0:
+          senderbal = senderbal - ammount
+          sendeebal = ammount
+          balancelines[senderindex] = str(message.author) + " " + str(senderbal) + (" {0:.2f}").format(sendermoneybalance)
+          newbalance = ""
+          for lines in balancelines[:-1]:
+            newbalance = newbalance + lines + "\n"
+          newbalance = newbalance + str(message.mentions[0]) + " " + str(ammount) + " 0\n"
+          with open("variables/userbalances.txt", "w") as userbalancesw:
+            userbalancesw.write(newbalance)
+          await message.channel.send("You gave " + str(message.mentions[0])[:-5] + " " + str(ammount) + " Blartcoin" + plural(ammount) + ". You now have " + str(senderbal) + " Blartcoin" + plural(senderbal) + " and " + str(message.mentions[0])[:-5] + " now has " + str(sendeebal) + " Blartcoin" + plural(sendeebal) + ".")
+
+          
+
   #except:
   #  pass
 
