@@ -7,12 +7,9 @@ Also thanks to Tajomstvo, who made the html for the website.
 Also also thanks to the Tracle.tv Discord server, for being generally cool.
 And finally, thanks to Kevin James for blessing this Earth.
 TODO:
-Fix the bot slowdown (builds over time every time stocktick is called)
-Do something with the quiz statistics on the website
 Start looking for website domains
 Get this on a bot list website
 Make $give
-Balance the stock pices (too cheap all the time)
 '''
 from replit import db
 import ast
@@ -42,8 +39,8 @@ matplotlib.use('Agg')
 quotesperpage = 15
 serverslist = []
 letterimg = ""
-quotes = ["I don't drink.", "Yello-ha!", "Windershins!", "FOOT LOCKER!", "I WILL CRAWL INSIDE YOU AND LAY EGGS LIKE A BABY SPIDER!", "I don't care, I'm going double parm.", "Not today, death!", "The mind is the only weapon that doesn't need a holster.", "Safety never takes a holiday.", "Chicken chow LANE?", "Help someone today.", "No one wins with a headbutt.", "I know a lot about sharks.", '''I'll meet you on the corner of "ne" and "ver".''', "Ladies? Problem. What's the genesis?", "I do have the authority to make a citizen's arrest.", "This lemonade is insane!", "Hold the mayo.", "Veck: I would love a happy meal.", "Pahud: Peanut Blart and Jelly!", "Donna: Robocop ain't real.", "Always bet on Blart.", "That's one brown banana.", "Leon: Were you serious about that happy meal?", "Hey. Paul Blart. Ten-year veteran.", "Take a dip!", "We live as we dream. Alone.", "It's a bad day to be bad people.", "Knot-jump!", "I'm a lone cowboy.", "I believe in magic!", "Veck: Give me a gun.", "Scuba Dooby-Doo.", "Suck on that!"]
-quotemovies = [1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1]
+quotes = ["I don't drink.", "Yello-ha!", "Windershins!", "FOOT LOCKER!", "I WILL CRAWL INSIDE YOU AND LAY EGGS LIKE A BABY SPIDER!", "I don't care, I'm going double parm.", "Not today, death!", "The mind is the only weapon that doesn't need a holster.", "Safety never takes a holiday.", "Chicken chow LANE?", "Help someone today.", "No one wins with a headbutt.", "I know a lot about sharks.", '''I'll meet you on the corner of "ne" and "ver".''', "Ladies? Problem. What's the genesis?", "I do have the authority to make a citizen's arrest.", "This lemonade is insane!", "Hold the mayo.", "Veck: I would love a happy meal.", "Pahud: Peanut Blart and Jelly!", "Donna: Robocop ain't real.", "Always bet on Blart.", "That's one brown banana.", "Leon: Were you serious about that happy meal?", "Hey. Paul Blart. Ten-year veteran.", "Take a dip!", "We live as we dream. Alone.", "It's a bad day to be bad people.", "Knot-jump!", "I'm a lone cowboy.", "I believe in magic!", "Veck: Give me a gun.", "Scuba Dooby-Doo.", "Suck on that!", "Amy: Go to hell."]
+quotemovies = [1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1]
 
 paulwords = ["paul", "palm", "qualm", "yawn", "pail", "pale", "pom", "tom", "god", "tod", "scott", "pre", "shit", "pie", "pon", "price", "nigg", "poop", "tracle", "tracl", "pol", "dick", "pussy", "au", "nathan", "soul", "awe", "piss", "pant", "david", "jacob", "robert", "rachel"]
 blartwords = ["blart", "card", "earth", "cart", "dart", "fart", "mart", "part", "heart", "dark", "start", "narc", "lard", "thwart", "wart", "guard", "car", "bart", "blurt", "blur", "burn", "art", "hard", "nox", "brew", "bath", "wat", "bout", "bitch", "bare", "drown", "bruh", "break", "fort", "block", "blown", "blow", "bet", "hulk", "boehm", "back", "tard", "be", "stock", "bit"]
@@ -97,19 +94,18 @@ def stocktick():
         stocknum = 0
         waitforpattern = rand.randint(3, 6)
         prevstockpattern = stockpattern
-        while prevstockpattern == stockpattern:
-          stockpattern = rand.randint(1, 5)
+        stockpattern = rand.randint(1, 5)
       if stockpattern == 1: #random
-        newprice = price + round(float(rand.randint(-100, 100) / 100), 2)
+        newprice = price + round(float(rand.randint(-200, 200) / 100), 2)
       elif stockpattern == 2: #slow rise
-        newprice = price + round(float(rand.randint(-50, 100) / 100), 2)
+        newprice = price + round(float(rand.randint(-100, 200) / 100), 2)
       elif stockpattern == 3: #fast rise
-        newprice = price + round(float(rand.randint(-50, 300) / 100), 2)
+        newprice = price + round(float(rand.randint(-100, 300) / 100), 2)
       elif stockpattern == 4: #slow fall
-        newprice = price + round(float(rand.randint(-100, 50) / 100), 2)
+        newprice = price + round(float(rand.randint(-200, 100) / 100), 2)
       elif stockpattern == 5: #fast fall
-        newprice = price + round(float(rand.randint(-300, -50) / 100), 2)
-      if newprice > 1 and newprice < 100 and stockpattern != prevstockpattern:
+        newprice = price + round(float(rand.randint(-300, -100) / 100), 2)
+      if newprice > 1 and newprice < 100:
         goodpercent = True
         stockpercent = round((newprice / price) - 1, 4)
         price = newprice
@@ -138,9 +134,7 @@ def stocktick():
         final2 = Image.alpha_composite(final2, graphimg.convert('RGBA'))
         final2.save("graph.png")
       else:
-        prevstockpattern = stockpattern
-        while prevstockpattern == stockpattern:
-          stockpattern = rand.randint(1, 5)
+        stockpattern = rand.randint(1, 5)
 stocktick()
 
 client = discord.Client()
@@ -623,7 +617,7 @@ async def on_message(message):
             if int(message.content.split()[1]) + usercoinbalance > 100:
               await message.channel.send("You can only have up to 100 Blartcoins.")
               return
-            usermoneybalance = usermoneybalance - price * int(message.content.split()[1])
+            usermoneybalance = usermoneybalance - price * int(message.content.split()[1]) * 1.05
             usercoinbalance = usercoinbalance + int(message.content.split()[1])
             balancelines[balancelines.index(line)] = str(message.author) + " " + str(usercoinbalance) + (" {0:.2f}").format(usermoneybalance)
             newbalance = ""
@@ -632,16 +626,16 @@ async def on_message(message):
             with open("variables/userbalances.txt", "w") as userbalancesw:
               userbalancesw.write(newbalance)
             if usermoneybalance < 0:
-              await message.channel.send(("You bought " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " for ${0:.2f}. You now have " + str(usercoinbalance) + " Blartcoin" + plural(usercoinbalance) + " and -${1:.2f}.").format(float(round(price, 4) * int(message.content.split()[1])), float(round(usermoneybalance * -1, 2))))
+              await message.channel.send(("You bought " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " for ${0:.2f}. You now have " + str(usercoinbalance) + " Blartcoin" + plural(usercoinbalance) + " and -${1:.2f}.").format(float(round(price, 4) * int(message.content.split()[1]) * 1.05), float(round(usermoneybalance * -1, 2))))
             else:
-              await message.channel.send(("You bought " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " for ${0:.2f}. You now have " + str(usercoinbalance) + " Blartcoin" + plural(usercoinbalance) + " and ${1:.2f}.").format(float(round(price, 4) * int(message.content.split()[1])), float(round(usermoneybalance, 2))))
+              await message.channel.send(("You bought " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " for ${0:.2f}. You now have " + str(usercoinbalance) + " Blartcoin" + plural(usercoinbalance) + " and ${1:.2f}.").format(float(round(price, 4) * int(message.content.split()[1]) * 1.05), float(round(usermoneybalance, 2))))
             return
         if not str(message.author) in str(balancesvar):
           if int(message.content.split()[1]) > 100:
             await message.channel.send("You can only have up to 100 Blartcoins.")
           else:
             with open("variables/userbalances.txt", "w") as userbalancesw:
-              userbalancesw.write(str(balancesvar) + str(message.author) + " " + message.content.split()[1] + (" {0:.2f}\n").format(0 - price * int(message.content.split()[1])))
+              userbalancesw.write(str(balancesvar) + str(message.author) + " " + message.content.split()[1] + (" {0:.2f}\n").format(0 - price * int(message.content.split()[1]) * 1.05))
             await message.channel.send(("You bought " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " for ${0:.2f}. You now have " + message.content.split()[1] + " Blartcoin" + plural(message.content.split()[1]) + " and -${0:.2f}.").format(round(price, 2) * int(message.content.split()[1])))
     if message.content == "$stock" or message.content == "$stocks" or message.content == "$stonks" or message.content == "$stonk":
       with open('variables/blartcoindata.txt', 'r') as coindata:
@@ -670,7 +664,7 @@ async def on_message(message):
         channel = client.get_channel(823908777802989599)
         await channel.send(file=discord.File("graph.png"))
         stockembed.set_image(url=db["graphurl"])
-        stockembed.set_footer(text="Time information will be available in the next tick.\nThis message will remain live for 10 minutes after being sent.")
+        stockembed.set_footer(text="Time information will be available in the next tick.\nThis message will remain live for 10 minutes after being sent.\nBuying Blartcoins has a 5% surcharge.")
         #stockembed.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/823102022953074718/stock_market.png")
         stockmessage = await message.channel.send(embed=stockembed)
         with open('variables/blartcoingraphdata.txt', 'r') as graphdata:
@@ -712,12 +706,12 @@ async def on_message(message):
               stockembed.set_image(url=db["graphurl"])
               await stockmessage.edit(embed=stockembed)
             else:
-              stockembed.set_footer(text=seconds + "\nThis message will remain live for 10 minutes after being sent.")
+              stockembed.set_footer(text=seconds + "\nThis message will remain live for 10 minutes after being sent.\nBuying Blartcoins has a 5% surcharge.")
               await stockmessage.edit(embed=stockembed)
         await asyncio.sleep(5)
-        stockembed.set_footer(text="This message is no longer live. Do $stock for a live reading.")
-        for messages in channel:
-          await messages.delete(messages)
+        stockembed.set_footer(text="This message is no longer live. Do $stock for a live reading.\nBuying Blartcoins has a 5% surcharge.")
+        channel = client.get_channel(823908777802989599)
+        await channel.purge()
         await stockmessage.edit(embed=stockembed)
     if message.content.startswith("$sell "):
       with open('variables/blartcoindata.txt', 'r') as coindata:
@@ -806,6 +800,7 @@ async def on_message(message):
       embedVar.add_field(name="$stock or $stocks", value="Gives you the latest information on the value of Blartcoins.", inline=False)
       embedVar.add_field(name="$buy [ammount]", value="Purchaces Blartcoins for the given price. (You can buy them even if you don't have enough money.)", inline=False)
       embedVar.add_field(name="$sell [ammount]", value="Sells your Blartcoins at the given price.", inline=False)
+      embedVar.add_field(name="$mine", value="Solve a math problem, get a Blartcoin!", inline=False)
       embedVar.add_field(name="$bal or $balance", value="Tells you how many Blartcoins and how much money you have.", inline=False)
       embedVar.add_field(name="$bankruptcy", value="Resets your balance. It'll ask for confirmation.", inline=False)
       embedVar.add_field(name="$leaderboard or $lb", value="See who is better than you.", inline=False)
@@ -850,6 +845,70 @@ async def on_message(message):
       await message.channel.send("You gotta tell me how many Blartcoins you want to buy.")
     if message.content == "$sell":
       await message.channel.send("You gotta tell me how many Blartcoins you want to sell.")
+    if message.content == "$mine":
+      answer = rand.randint(1, 99)
+      part1 = rand.randint(1, 9)
+      part2 = rand.randint(1, 2)
+      part3 = rand.randint(1, 9)
+      if part2 == 1:
+        problem = str(part1) + "X + " + str(part3) + " = " + str(part1 * answer + part3)
+      else:
+        problem = str(part1) + "X - " + str(part3) + " = " + str(part1 * answer - part3)
+      randans1 = rand.randint(1, 99)
+      while randans1 == answer:
+        randans1 = rand.randint(1, 99)
+      randans2 = rand.randint(1, 99)
+      while randans2 == answer:
+        randans2 = rand.randint(1, 99)
+      randans3 = rand.randint(1, 99)
+      while randans3 == answer:
+        randans3 = rand.randint(1, 99)
+      answers = [answer, rand.randint(1, 99), rand.randint(1, 99), rand.randint(1, 99)]
+      answerrand = [answers.pop(rand.randint(0, 3)), answers.pop(rand.randint(0, 2)), answers.pop(rand.randint(0, 1)), answers.pop(0)]
+      embedVar = discord.Embed(title=str("Solve for X: "), description="\n" + problem + "\nA. " + str(answerrand[0]) + "\nB. " + str(answerrand[1]) + "\nC. " + str(answerrand[2]) + "\nD. " + str(answerrand[3]), color=0x4287f5)
+      msg = await message.channel.send(embed=embedVar)
+      await msg.add_reaction('🇦')
+      await msg.add_reaction('🇧')
+      await msg.add_reaction('🇨')
+      await msg.add_reaction('🇩')
+      def check(reaction, user):
+        return user == message.author and (str(reaction.emoji) == '🇦' or str(reaction.emoji) == '🇧' or str(reaction.emoji) == '🇨' or str(reaction.emoji) == '🇩')
+      try:
+        reaction, user = await client.wait_for('reaction_add', timeout=60.0, check=check)
+      except asyncio.TimeoutError:
+        await message.channel.send("Time's up! You took too long.")
+      else:
+        if (str(reaction.emoji) == '🇦' and answerrand[0] == answer) or (str(reaction.emoji) == '🇧' and answerrand[1] == answer) or (str(reaction.emoji) == '🇨' and answerrand[2] == answer) or (str(reaction.emoji) == '🇩' and answerrand[3] == answer):
+          with open('variables/userbalances.txt', 'r') as userbalances:
+            balancesvar = userbalances.read()
+            balancelines = balancesvar.split("\n")
+            for line in balancesvar.split("\n"):
+              if str(message.author) == str(line[:len(str(message.author))]):
+                usermoneybalance = float(line[len(str(message.author)):].split()[1])
+                usercoinbalance = int(line[len(str(message.author)):].split()[0])
+                if usercoinbalance == 100:
+                  await message.channel.send("You can only have up to 100 Blartcoins.")
+                  return
+                usermoneybalance = usermoneybalance
+                usercoinbalance = usercoinbalance + 1
+                balancelines[balancelines.index(line)] = str(message.author) + " " + str(usercoinbalance) + (" {0:.2f}").format(usermoneybalance)
+                newbalance = ""
+                for lines in balancelines[:-1]:
+                  newbalance = newbalance + lines + "\n"
+                with open("variables/userbalances.txt", "w") as userbalancesw:
+                  userbalancesw.write(newbalance)
+                await message.channel.send("You mined a Blartcoin!")
+                return
+            if not str(message.author) in str(balancesvar):
+              with open("variables/userbalances.txt", "w") as userbalancesw:
+                userbalancesw.write(str(balancesvar) + str(message.author) + " 1 0\n")
+                await message.channel.send("You mined a Blartcoin!")
+        else:
+          await message.channel.send('You got it wrong :(')
+        downcomm()
+    if "i apologize" in message.content.lower() or "i'm sorry" in message.content.lower() or "im sorry" in message.content.lower():
+      await message.channel.send("That's the spirit!")
+        
   #except:
   #  pass
 

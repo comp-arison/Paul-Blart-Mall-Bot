@@ -1,7 +1,11 @@
-Comp Arison#1337 100 534.40
-ZetaPrime77#9420 100 -387.00
-Hip#6464 100 -288.00
+Comp Arison#1337 1 3456.38
+ZetaPrime77#9420 1 2111.75
+Hip#6464 100 1917.22
 danjo#5672 0 129.80
 TheBucketCat#2464 20 -368.80
 Sparks#6996 5 -198.25
-Joe Mama#7284 100 -304.64
+Joe Mama#7284 0 4911.57
+boilgeoga#6268 0 1673.30
+wissotsky#8554 0 1677.80
+davy#4168 100 -821.10
+Tajomstvo#3986 0 -160.48
