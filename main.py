@@ -9,7 +9,6 @@ And finally, thanks to Kevin James for blessing this Earth.
 TODO:
 Start looking for website domains
 Get this on a bot list website
-Make $give
 Make a store to spend the virtual money
 '''
 from replit import db
@@ -1014,8 +1013,6 @@ async def on_message(message):
           with open("variables/userbalances.txt", "w") as userbalancesw:
             userbalancesw.write(newbalance)
           await message.channel.send("You gave " + str(message.mentions[0])[:-5] + " " + str(ammount) + " Blartcoin" + plural(ammount) + ". You now have " + str(senderbal) + " Blartcoin" + plural(senderbal) + " and " + str(message.mentions[0])[:-5] + " now has " + str(sendeebal) + " Blartcoin" + plural(sendeebal) + ".")
-
-          
 
   #except:
   #  pass

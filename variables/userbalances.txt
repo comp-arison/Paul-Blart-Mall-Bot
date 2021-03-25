@@ -1,4 +1,4 @@
-Comp Arison#1337 100 3884.73
+Comp Arison#1337 0 5684.73
 ZetaPrime77#9420 1 2111.75
 Hip#6464 100 1917.22
 danjo#5672 0 129.80
@@ -6,7 +6,7 @@ TheBucketCat#2464 20 -368.80
 Sparks#6996 5 -198.25
 Joe Mama#7284 0 4911.57
 boilgeoga#6268 0 1673.30
-wissotsky#8554 -298 12280.92
+wissotsky#8554 0 2280.92
 davy#4168 100 -821.10
-Tajomstvo#3986 0 -160.48
+Tajomstvo#3986 4 -174.23
 Minty#5463 0 614.40
