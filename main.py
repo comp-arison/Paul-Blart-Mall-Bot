@@ -137,7 +137,10 @@ def stocktick():
         stockpattern = rand.randint(1, 5)
 stocktick()
 
-client = discord.Client()
+intents = discord.Intents().all()
+#intents.members = False
+intents.presences = False
+client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
@@ -327,7 +330,7 @@ async def on_message(message):
       await msg.add_reaction('1️⃣')
       await msg.add_reaction('2️⃣')
       def check(reaction, user):
-        return user == message.author and (str(reaction.emoji) == '1️⃣' or str(reaction.emoji) == '2️⃣')
+        return user == message.author and (str(reaction.emoji) == '1️⃣' or str(reaction.emoji) == '2️⃣') and reaction.message.id == msg.id
       try:
         reaction, user = await client.wait_for('reaction_add', timeout=60.0, check=check)
       except asyncio.TimeoutError:
@@ -426,7 +429,7 @@ async def on_message(message):
       await msg.add_reaction('🇨')
       await msg.add_reaction('🇩')
       def check(reaction, user):
-        return user == message.author and (str(reaction.emoji) == '🇦' or str(reaction.emoji) == '🇧' or str(reaction.emoji) == '🇨' or str(reaction.emoji) == '🇩')
+        return user == message.author and (str(reaction.emoji) == '🇦' or str(reaction.emoji) == '🇧' or str(reaction.emoji) == '🇨' or str(reaction.emoji) == '🇩') and reaction.message.id == msg.id
       try:
         reaction, user = await client.wait_for('reaction_add', timeout=60.0, check=check)
       except asyncio.TimeoutError:
@@ -454,7 +457,7 @@ async def on_message(message):
         await msg.add_reaction('✅')
         await msg.add_reaction('❎')
         def check(reaction, user):
-          return user == message.author and (str(reaction.emoji) == '✅' or str(reaction.emoji) == '❎')
+          return user == message.author and (str(reaction.emoji) == '✅' or str(reaction.emoji) == '❎') and reaction.message.id == msg.id
         try:
           reaction, user = await client.wait_for('reaction_add', timeout=60.0, check=check)
         except asyncio.TimeoutError:
@@ -721,7 +724,7 @@ async def on_message(message):
                 stockembed.add_field(name="Blartcoin Value", value=("📉 {1:.2f}%🔽\nValue: ${0:.2f}").format(round(price, 2), stockpercent * 100), inline=False)
               else:
                 stockembed.add_field(name="Blartcoin Value", value=("📈 {1:.2f}%🔼\nValue: ${0:.2f}").format(round(price, 2), stockpercent * 100), inline=False)
-              stockembed.set_footer(text=seconds + "\nThis message will remain live for 10 minutes after being sent.")
+              stockembed.set_footer(text=seconds + "\nThis message will remain live for 10 minutes after being sent.\nBuying Blartcoins has a 10% surcharge.")
               #stockembed.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/823102022953074718/stock_market.png")
               channel = client.get_channel(823908777802989599)
               await channel.send(file=discord.File("graph.png"))
@@ -800,7 +803,7 @@ async def on_message(message):
       await msg.add_reaction('✅')
       await msg.add_reaction('❎')
       def check(reaction, user):
-        return user == message.author and (str(reaction.emoji) == '✅' or str(reaction.emoji) == '❎')
+        return user == message.author and (str(reaction.emoji) == '✅' or str(reaction.emoji) == '❎') and reaction.message.id == msg.id
       try:
         reaction, user = await client.wait_for('reaction_add', timeout=60.0, check=check)
       except asyncio.TimeoutError:
@@ -905,7 +908,7 @@ async def on_message(message):
       await msg.add_reaction('🇨')
       await msg.add_reaction('🇩')
       def check(reaction, user):
-        return user == message.author and (str(reaction.emoji) == '🇦' or str(reaction.emoji) == '🇧' or str(reaction.emoji) == '🇨' or str(reaction.emoji) == '🇩')
+        return user == message.author and (str(reaction.emoji) == '🇦' or str(reaction.emoji) == '🇧' or str(reaction.emoji) == '🇨' or str(reaction.emoji) == '🇩') and reaction.message.id == msg.id
       try:
         reaction, user = await client.wait_for('reaction_add', timeout=60.0, check=check)
       except asyncio.TimeoutError:
@@ -1013,7 +1016,6 @@ async def on_message(message):
           with open("variables/userbalances.txt", "w") as userbalancesw:
             userbalancesw.write(newbalance)
           await message.channel.send("You gave " + str(message.mentions[0])[:-5] + " " + str(ammount) + " Blartcoin" + plural(ammount) + ". You now have " + str(senderbal) + " Blartcoin" + plural(senderbal) + " and " + str(message.mentions[0])[:-5] + " now has " + str(sendeebal) + " Blartcoin" + plural(sendeebal) + ".")
-
   #except:
   #  pass
 
