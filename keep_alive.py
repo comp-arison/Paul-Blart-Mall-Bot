@@ -6,7 +6,7 @@ import os.path
 app = Flask(  # Create a flask app
 	__name__,
 	template_folder='',  # Name of html file folder
-	static_folder='assets'  # Name of directory for static files
+	static_folder=''  # Name of directory for static files
 )
 
 def plural(number):
@@ -88,20 +88,20 @@ def numofserversstat(num):
 
 #idk what this is i just copy pasted it and it worked
 def root_dir():  # pragma: no cover
-    return os.path.abspath(os.path.dirname(__file__))
+  return os.path.abspath(os.path.dirname(__file__))
 def get_file(filename):  # pragma: no cover
-    try:
-        src = os.path.join(root_dir(), filename)
-        # Figure out how flask returns static files
-        # Tried:
-        # - render_template
-        # - send_file
-        # This should not be so non-obvious
-        return open(src).read()
-    except IOError as exc:
-        return str(exc)
+  try:
+    src = os.path.join(root_dir(), filename)
+    # Figure out how flask returns static files
+    # Tried:
+    # - render_template
+    # - send_file
+    # This should not be so non-obvious
+    return open(src).read()
+  except IOError as exc:
+    return str(exc)
 
-@app.route('/', methods=['GET', 'POST', 'HEAD', 'PUT', 'CONNECT', 'OPTIONS', 'TRACE', 'PATH'])
+@app.route('/')
 def home():
 	return render_template(
 		'index.html',  # Template file path, starting from the templates folder. 
