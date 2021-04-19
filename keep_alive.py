@@ -1,3 +1,4 @@
+#this isn't coded very well but I'm too scared to change it.
 from replit import db
 import ast
 from flask import Flask, render_template
@@ -106,6 +107,12 @@ def home():
 	return render_template(
 		'index.html',  # Template file path, starting from the templates folder. 
 	).format(commandsresponded=commandsresponded, plural=commplural, latestquote=latestquote, quotewins=quotewins, quotelosses=quotelosses, quotewinplural=quotewinplural, quotelossplural=quotelossplural, triviawins=triviawins, trivialosses=trivialosses, triviawinplural=triviawinplural, trivialossplural=trivialossplural, numofservers=serversnum)
+
+@app.route('/commands')
+def commands():
+	return render_template(
+		'commands.html',  # Template file path, starting from the templates folder. 
+	)
 
 
 def run():
