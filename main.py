@@ -9,8 +9,9 @@ And finally, thanks to Kevin James for blessing this Earth.
 TODO:
 Start looking for website domains
 Make a store to spend the virtual money
-Make a command list webpage
 Make a permanent fix to the stock market data loss bug
+I had an idea for a command that lets you play a game of wheel of fortune but its paul blart quotes. its called wheel of blartune
+Who wants to be a millionaire based quiz command
 '''
 from replit import db
 import discord
@@ -28,11 +29,11 @@ from keep_alive import triviawin
 from keep_alive import trivialoss
 from keep_alive import numofserversstat
 from PIL import Image, ImageFont, ImageDraw
-#import matplotlib
-#matplotlib.use('Agg')
-#import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
-#plt.ioff()
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+#from matplotlib.figure import Figure
+plt.ioff()
 import emoji
 import threading
 import random as rand
@@ -123,15 +124,15 @@ def stocktick():
         graphlist = [0]
         for item in graphdatavar.split("\n"):
           graphlist.append(float(item))
-        fig = Figure()
-        ax = fig.subplots()
-        #plt.clf()
-        #plt.plot([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], graphlist)
-        #plt.xlim(1, 10)
-        #plt.savefig('graphline.png', transparent=True)
-        ax.plot([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], graphlist)
+        #fig = Figure()
+        #ax = fig.subplots()
+        plt.clf()
+        plt.plot([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], graphlist)
+        plt.xlim(1, 10)
+        plt.savefig('graphline.png', transparent=True)
+        #ax.plot([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], graphlist)
         #ax.xlim(1, 10)
-        fig.savefig('graphline.png', transparent=True)
+        #fig.savefig('graphline.png', transparent=True)
         #this was way harder than it should have been
         bgimg = Image.open("graphbg.png")
         graphimg = Image.open("graphline.png")
@@ -417,11 +418,11 @@ async def on_message(message):
     if "fuck you" in message.content.lower():
       await message.channel.send("That's awfully rude, don't you think?")
     if message.content == "$wakeup":
-      await message.channel.send(file=discord.File('wakeup.mp4'))
+      await message.channel.send(file=discord.File('memes/wakeup.mp4'))
     if message.content == "$cum":
-      await message.channel.send(file=discord.File('cum.mp4'))
+      await message.channel.send(file=discord.File('memes/cum.mp4'))
     if message.content == "$snake":
-      await message.channel.send(file=discord.File('snake.mp4'))
+      await message.channel.send(file=discord.File('memes/snake.mp4'))
     if message.content.startswith("$trivia"):
       if len(message.content.split()) == 2:
         questionnum = int(message.content.split()[1]) - 1
@@ -843,10 +844,10 @@ async def on_message(message):
       embedVar.add_field(name="$stock or $stocks", value="Gives you the latest information on the value of Blartcoins.", inline=False)
       embedVar.add_field(name="$buy [ammount]", value="Purchaces Blartcoins for the given price. (You can buy them even if you don't have enough money.)", inline=False)
       embedVar.add_field(name="$sell [ammount]", value="Sells your Blartcoins at the given price.", inline=False)
-      embedVar.add_field(name="$mine", value="Solve a math problem, get a Blartcoin!", inline=False)
+      embedVar.add_field(name="$mine", value="Solve for X, get a Blartcoin!", inline=False)
       embedVar.add_field(name="$give [user] [ammount]", value="Gives Blartcoins to the person you specify.", inline=False)
-      embedVar.add_field(name="$bankruptcy", value="Resets your balance. It'll ask for confirmation.", inline=False)
-      embedVar.add_field(name="$bal or $balance", value="Tells you how many Blartcoins and how much money you have.", inline=False)
+      embedVar.add_field(name="$bankruptcy", value="Resets your balance. I'll ask for confirmation.", inline=False)
+      embedVar.add_field(name="$balance or $bal", value="Tells you how many Blartcoins and how much money you have.", inline=False)
       embedVar.add_field(name="$leaderboard or $lb", value="See who is better than you.", inline=False)
       embedVar.set_footer(text='Tip: You can say "max" instead of an ammount to buy or sell as much as you can.')
       await message.channel.send(embed=embedVar)
@@ -1061,6 +1062,7 @@ async def on_message(message):
       embedVar.add_field(name="$restore", value="Replaces the current list with the backup list.", inline=False)
       embedVar.add_field(name="$print [text]", value="Outputs the given text to the console.", inline=False)
       embedVar.add_field(name="$whois [user ID]", value="Tells you the name of the user you give the ID of.", inline=False)
+      embedVar.add_field(name="$write [new balance data]", value="Overwrites the balance data and backs up the current data. Please be super careful with this.", inline=False)
       embedVar.set_footer(text='"With great power comes great big booty bitches."')
       await message.author.dm_channel.send(embed=embedVar)
     if message.content.startswith("$print ") and str(message.author) in admins:
@@ -1071,6 +1073,51 @@ async def on_message(message):
         await message.channel.send(message.content.split()[1] + " is " + str(user.name))
       except:
         await message.channel.send("That's not a valid ID.")
+    if message.content.startswith("$write ") and str(message.author) in admins:
+      with open("variables/userbalances.txt", "r") as balancedata:
+        currentvar = balancedata.read()
+      with open("variables/balancesbackup.txt", "w") as backupdata:
+        backupdata.write(currentvar)
+      with open("variables/userbalances.txt", "w") as balw:
+        balw.write(message.content[7:])
+      await message.channel.send("Backed up and rewritten succesfully")
+      await me.dm_channel.send(str(message.author) + " just used $write.")
+    if message.content == "$help help":
+      embedVar = discord.Embed(title="$help", description="Helps you with a helpful help menu.", color=0xffff00)
+      embedVar.set_footer(text="For your help.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help hello":
+      embedVar = discord.Embed(title="$hello", description="Is this thing on? If I don't respond to this command, that's how you know something's up.", color=0xffff00)
+      embedVar.set_footer(text='Fun fact: "Hi", "Hello", and "Hey" is said 36 times in Paul Blart: Mall Cop.')
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help quote":
+      embedVar = discord.Embed(title="$quote {number}", description="Gives you a quote from one of my movies. If you want me to say a specific quote, give me the ID of the quote and I'll say it if this server has unlocked it.", color=0xffff00)
+      embedVar.set_footer(text="Do you know of a quote we haven't added yet? Message Comp Arison#1337 and he'll get that added as soon as he can.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help quotes" or message.content == "$help quotelist":
+      embedVar = discord.Embed(title="$" + message.content[6:], description="Gives you a list of all the quotes this server has unlocked. This is where you'll find a quote's ID.", color=0xffff00)
+      embedVar.set_footer(text='Can you unlock all the quotes?')
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help resetquotes":
+      embedVar = discord.Embed(title="$resetquotes", description="Resets the quote list for this server. You can only use this if you're a server administrator.", color=0xffff00)
+      embedVar.set_footer(text="Sometimes, you just want to start over.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help quiz":
+      embedVar = discord.Embed(title="$quiz", description="Welcome to Jeoblarty! You're given a quote, and you have to guess whether it was from Paul Blart: Mall Cop 1 or 2!", color=0xffff00)
+      embedVar.set_footer(text='What is "Foot Locker"?')
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help blartify":
+      embedVar = discord.Embed(title="$blartify [text]", description="Translates your text into the language of Blart.", color=0xffff00)
+      embedVar.set_footer(text='''blar·ti·fy\n/blärtifaɪ/\nverb\nto modify key details of something to be referential of Paul Blart: Mall Cop.\n"I just blartified the Bible and it's way better than it was."''')
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help watch":
+      embedVar = discord.Embed(title="$watch", description="Tells you where you can watch Paul Blart: Mall Cop 1 and 2.", color=0xffff00)
+      embedVar.set_footer(text="Unfortunately, Paul Blart: Mall Cop 2 is not on Netflix. I know, I'm just as disapointed as you.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help arrest":
+      embedVar = discord.Embed(title="$arrest [user]", description="Puts the mentioned user under citizens arrest.", color=0xffff00)
+      embedVar.set_footer(text="You could also arrest ")
+      await message.channel.send(embed=embedVar)
   #except:
   #  pass
 

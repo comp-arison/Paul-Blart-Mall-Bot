@@ -2,9 +2,10 @@
 <html>
 
 <head>
-    <title>Command List - Vibin</title>
+    <title>The Duties of Blart</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="shortcut icon" type="image/png" href="assets/home/img/icon.png"/>
     <link rel="stylesheet" href="assets/commands/css/main.css" />
     <noscript>
         <link rel="stylesheet" href="assets/commands/css/noscript.css" /></noscript>
@@ -19,9 +20,9 @@
             <div class="inner">
 
                 <!-- Logo -->
-                <a href="index.html" class="logo">
-                    <span class="symbol"><img src="images/Spray_Pachimari.png" alt="" width="172.243px"
-                            height="172.243px" /></span><span class="title">Vibin Bot</span>
+                <a href="https://paul-blart-mall-bot.nathanboehm.repl.co/" class="logo">
+                    <span class="symbol"><img src="assets/home/img/icon.png" alt="" width="172.243px"
+                            height="172.243px" /></span><span class="title">Paul Blart: Mall Bot</span>
                 </a>
 
             </div>
@@ -31,7 +32,7 @@
         <div id="main">
             <div class="inner">
                 <h1>Command List</h1>
-                <h2>My Commands</h2>
+                <h2>Main Commands</h2>
                 <div class="table-wrapper">
                     <table class="alt">
                         <thead>
@@ -43,39 +44,120 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><code>afk</code></td>
-                                <td>Make the bot stay in vc 24/7</td>
-                                <td><code>vafk</code></td>
+                                <td><code>help</code></td>
+                                <td>I show you this list of commands.</td>
+                                <td><code>$help {command}</code></td>
                             </tr>
                             <tr>
                                 <!-- &lt;playername&gt; -->
-                                <td><code>help</code></td>
-                                <td>Use this to see info on the command in the help message!</td>
-                                <td><code>vhelp [command]</code></td>
+                                <td><code>hello</code></td>
+                                <td>I say hi back.</td>
+                                <td><code>$hello</code></td>
                             </tr>
                             <tr>
-                                <td><code>invite</code></td>
-                                <td>Get the invite url of the bot to add it to your server!</td>
-                                <td><code>vinvite</code></td>
+                                <td><code>quote</code></td>
+                                <td>I say a wacky quote from one of my movies. Put a number after that and I'll say that quote from the server's quote list.</td>
+                                <td><code>$quote {number}</code></td>
                             </tr>
                             <tr>
-                                <td><code>leave</code></td>
-                                <td>make the vot leave the vc your in!</td>
-                                <td><code>vleave</code></td>
+                                <td><code>quotelist</code></td>
+                                <td>I give you a list of all the quotes the server has unlocked.</td>
+                                <td><code>$quotelist</code><code>$quotes</code></td>
                             </tr>
                             <tr>
-                                <td><code>loop</code></td>
-                                <td>Loop the song/queue!</td>
-                                <td><code>vloop</code></td>
-							<tr>
-                                <td><code>lyrics</code></td>
-                                <td>See the lyrics of the current song playing!</td>
-                                <td><code>vlyrics</code></td>
+                                <td><code>resetquotes</code></td>
+                                <td>I reset the quote list for the server. You need to be an adminstrator for this.</td>
+                                <td><code>$resetquotes</code></td>
                             </tr>
-							<tr>
-                                <td><code>nowplaying</code></td>
-                                <td>See whats playing in the queue!</td>
-                                <td><code>vnowplaying</code></td>
+							              <tr>
+                                <td><code>quiz</code></td>
+                                <td>Test your knowledge of Paul Blart quotes.</td>
+                                <td><code>$quiz</code></td>
+                            </tr>
+							              <tr>
+                                <td><code>blartify</code></td>
+                                <td>Say something and I'll Blartify it.</td>
+                                <td><code>$blartify [text]</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>watch</code></td>
+                                <td>I give you links to watch my movies.</td>
+                                <td><code>$watch</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>arrest</code></td>
+                                <td>Say a name and I'll arrest 'em.</td>
+                                <td><code>$arrest [user]</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>trivia</code></td>
+                                <td>Test your knowledge of the Paul Blart universe.</td>
+                                <td><code>$trivia</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>citation</code></td>
+                                <td>Prints out a citation to those evil doers.</td>
+                                <td><code>$citation [Written to]; [Reason]; [Penalty]</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>meme</code></td>
+                                <td>Generates a dvd cover with the text you say.</td>
+                                <td><code>$meme [text]</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h2>Stock Market</h2>
+                <div class="table-wrapper">
+                    <table class="alt">
+                        <thead>
+                            <tr>
+                                <th>Command Name</th>
+                                <th>Description</th>
+                                <th>Usage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>stock</code></td>
+                                <td>Gives you the latest information on the value of Blartcoins.</td>
+                                <td><code>$stock</code><code>$stocks</code></td>
+                            </tr>
+                            <tr>
+                                <!-- &lt;playername&gt; -->
+                                <td><code>buy</code></td>
+                                <td>Purchaces Blartcoins for the given price. (You can buy them even if you don't have enough money.)</td>
+                                <td><code>$buy [ammount]</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>sell</code></td>
+                                <td>Sells your Blartcoins at the given price.</td>
+                                <td><code>$sell [ammount]</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>mine</code></td>
+                                <td>Solve for X, get a Blartcoin!</td>
+                                <td><code>$mine</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>give</code></td>
+                                <td>Gives Blartcoins to the person you specify.</td>
+                                <td><code>$give [user] [ammount]</code></td>
+                            </tr>
+							              <tr>
+                                <td><code>bankruptcy</code></td>
+                                <td>Resets your balance. I'll ask for confirmation.</td>
+                                <td><code>$quiz</code></td>
+                            </tr>
+							              <tr>
+                                <td><code>balance</code></td>
+                                <td>Tells you how many Blartcoins and how much money you have.</td>
+                                <td><code>$balance</code><code>$bal</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>leaderboard</code></td>
+                                <td>See who is better than you.</td>
+                                <td><code>$leaderboard</code><code>$lb</code></td>
                             </tr>
                         </tbody>
                     </table>
@@ -208,7 +290,7 @@
             <div class="inner">
                 <section>
                     <ul class="actions fit">
-                        <li><a href="https://discord.com/oauth2/authorize?client_id=820109957671419905&permissions=37080128&scope=bot"
+                        <li><a href="https://discord.com/api/oauth2/authorize?client_id=806772738835349514&permissions=67632192&scope=bot"
                                 class="button primary fit">Invite to discord server</a></li>
                     </ul>
                     <!-- <br><br> -->
@@ -220,7 +302,7 @@
 								</ul> -->
                 </section>
                 <ul class="copyright">
-                    <li>&copy; Vibin App. All rights reserved</li>
+                    <li>&copy; 2021 Nathan Boehm</li>
                 </ul>
             </div>
         </footer>
