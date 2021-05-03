@@ -17,49 +17,32 @@ def plural(number):
     return "s"
 
 commandsresponded = 0
-commplural = "s"
 latestquote = "nothing."
 quotewins = db["quotewins"]
 quotelosses = db["quotelosses"]
-quotewinplural = plural(quotewins)
-quotelossplural = plural(quotelosses)
-triviawins = db["triviawins"]
-trivialosses = db["trivialosses"]
-triviawinplural = plural(triviawins)
-trivialossplural = plural(trivialosses)
 serversnum = 0
 
-with open('variables/commandsresponded.txt', 'r') as f: #If the file is a `.env` file put `.env` in the first string
+with open('variables/commandsresponded.txt', 'r') as f:
   commandsresponded = ast.literal_eval(f.read())
-with open('variables/latestquote.txt', 'r') as f: #If the file is a `.env` file put `.env` in the first string
+with open('variables/latestquote.txt', 'r') as f:
   latestquote = str(f.read())
 
 def upcomm():
   global commandsresponded
   commandsresponded = commandsresponded + 1
-  with open('variables/commandsresponded.txt', 'w') as f: #If the file is a `.env` file put `.env` in the first string
+  with open('variables/commandsresponded.txt', 'w') as f:
     f.write(str(commandsresponded))
-  if commandsresponded == 1:
-    global plural
-    plural = ""
-  else:
-    plural = "s"
 
 def downcomm():
   global commandsresponded
   commandsresponded = commandsresponded - 1
-  with open('variables/commandsresponded.txt', 'w') as f: #If the file is a `.env` file put `.env` in the first string
+  with open('variables/commandsresponded.txt', 'w') as f:
     f.write(str(commandsresponded))
-  if commandsresponded == 1:
-    global plural
-    plural = ""
-  else:
-    plural = "s"
 
 def setlatestquote(quote):
   global latestquote
   latestquote = '"' + quote + '"'
-  with open('variables/latestquote.txt', 'w') as f: #If the file is a `.env` file put `.env` in the first string
+  with open('variables/latestquote.txt', 'w') as f:
     f.write(str(latestquote))
 
 def quotewin():
@@ -71,16 +54,6 @@ def quoteloss():
   global quotelosses
   quotelosses = quotelosses + 1
   db["quotelosses"] = quotelosses
-
-def triviawin():
-  global triviawins
-  triviawins = triviawins + 1
-  db["triviawins"] = triviawins
-
-def trivialoss():
-  global trivialosses
-  trivialosses = trivialosses + 1
-  db["trivialosses"] = trivialosses
 
 def numofserversstat(num):
   global serversnum
@@ -106,7 +79,7 @@ def get_file(filename):  # pragma: no cover
 def home():
 	return render_template(
 		'index.html',  # Template file path, starting from the templates folder. 
-	).format(commandsresponded=commandsresponded, plural=commplural, latestquote=latestquote, quotewins=quotewins, quotelosses=quotelosses, quotewinplural=quotewinplural, quotelossplural=quotelossplural, triviawins=triviawins, trivialosses=trivialosses, triviawinplural=triviawinplural, trivialossplural=trivialossplural, numofservers=serversnum)
+	).format(commandsresponded=commandsresponded, latestquote=latestquote, quotewins=quotewins, quotelosses=quotelosses, numofservers=serversnum)
 
 @app.route('/commands')
 def commands():

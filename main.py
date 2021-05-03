@@ -10,8 +10,10 @@ TODO:
 Start looking for website domains
 Make a store to spend the virtual money
 Make a permanent fix to the stock market data loss bug
-I had an idea for a command that lets you play a game of wheel of fortune but its paul blart quotes. its called wheel of blartune
+Hangman with the quotes
 Who wants to be a millionaire based quiz command
+Potential store items:
+Unlock a random locked quote
 '''
 from replit import db
 import discord
@@ -25,8 +27,6 @@ from keep_alive import downcomm
 from keep_alive import setlatestquote
 from keep_alive import quotewin
 from keep_alive import quoteloss
-from keep_alive import triviawin
-from keep_alive import trivialoss
 from keep_alive import numofserversstat
 from PIL import Image, ImageFont, ImageDraw
 import matplotlib
@@ -41,7 +41,6 @@ import asyncio
 
 quotesperpage = 15
 admins = ["Comp Arison#1337", "Joe Mama#7284", "ZetaPrime77#9420"]
-letterimg = ""
 quotes = ["I don't drink.", "Yello-ha!", "Windershins!", "FOOT LOCKER!", "I WILL CRAWL INSIDE YOU AND LAY EGGS LIKE A BABY SPIDER!", "I don't care, I'm going double parm.", "Not today, death!", "The mind is the only weapon that doesn't need a holster.", "Safety never takes a holiday.", "Chicken chow LANE?", "Help someone today.", "No one wins with a headbutt.", "I know a lot about sharks.", '''I'll meet you on the corner of "ne" and "ver".''', "Ladies? Problem. What's the genesis?", "I do have the authority to make a citizen's arrest.", "This lemonade is insane!", "Hold the mayo.", "Veck: I would love a happy meal.", "Pahud: Peanut Blart and Jelly!", "Donna: Robocop ain't real.", "Always bet on Blart.", "That's one brown banana.", "Leon: Were you serious about that happy meal?", "Hey. Paul Blart. Ten-year veteran.", "Take a dip!", "We live as we dream. Alone.", "It's a bad day to be bad people.", "Knot-jump!", "I'm a lone cowboy.", "I believe in magic!", "Veck: Give me a gun.", "Scuba Dooby-Doo.", "Suck on that!", "Amy: Go to hell.", "Twist it. Feel the nub.", "We eat to fill a void."]
 quotemovies = [1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1]
 
@@ -60,9 +59,11 @@ def plural(number):
   else:
     return "s"
 
+letterimg = ""
 stockpercent = 0.00
 secondsuntiltick = 60 #does nothing
 stockmessage = ""
+db["sponsoredmessage"] = "Looks like no one has bought the sponsored message yet. Will you be the first?"
 stocknum = 1
 price = 0
 newprice = 0
@@ -151,7 +152,7 @@ client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
-  print("I'm ready to protect the mall, or my name isn't {0.user}!".format(client))
+  print("I'm ready to protect the Mall, or my name isn't {0.user}!".format(client))
   numofserversstat(len(client.guilds))
   await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=str(len(client.guilds)) + " servers. $help"))
   channel = client.get_channel(823908777802989599)
@@ -193,11 +194,10 @@ async def on_message(message):
       embedVar.add_field(name="$quote {number (optional)}", value="I say a wacky quote from one of my movies. Put a number after that and I'll say that quote from the server's quote list.", inline=False)
       embedVar.add_field(name="$quotelist or $quotes", value="I give you a list of all the quotes this server has unlocked.", inline=False)
       embedVar.add_field(name="$resetquotes", value="I reset the quote list for this server. You need to be an administrator for this.", inline=False)
-      embedVar.add_field(name="$quiz", value="Test your knowledge of Paul Blart quotes.", inline=False)
+      embedVar.add_field(name="$quiz", value="Test your knowledge of the Paul Blart universe.", inline=False)
       embedVar.add_field(name="$blartify [text]", value="Say something and I'll Blartify it.", inline=False)
       embedVar.add_field(name="$watch", value="I give you links to watch my movies.", inline=False)
       embedVar.add_field(name="$arrest [user]", value="Say a name and I'll arrest 'em.", inline=False)
-      embedVar.add_field(name="$trivia", value="Test your knowledge of the Paul Blart universe.", inline=False)
       embedVar.add_field(name="$citation [Written to]; [Reason]; [Penalty]", value="Prints out a citation to those evil doers.", inline=False)
       embedVar.add_field(name="$meme [text]", value="Generates a dvd cover with the text you say. $help meme for more information.", inline=False)
       embedVar.add_field(name="$help stock", value="Gives information about Blartcoins and the Blart Market.", inline=False)
@@ -205,7 +205,7 @@ async def on_message(message):
       await message.channel.send(embed=embedVar)
     #if the message is $quotelist or $quotes, say the list of quotes
     if message.content == "$quotelist" or message.content == "$quotes" or message.content.startswith("$quotelist ") or message.content.startswith("$quotes "):
-      if str(message.guild) == "None":
+      if message.channel.type is discord.ChannelType.private:
         await message.channel.send("You need to be in a server to use that command.")
         return
       pagenum = 1
@@ -225,13 +225,13 @@ async def on_message(message):
         serverfoundinquotelists = False
         global quotesfound
         for line in str(quotedata.read()).split("\n"):
-          if str(message.guild) == str(line[:len(str(message.guild))]):
+          if str(message.guild.id) == str(line.split(0)):
             for quote in quotes[quotesperpage * (pagenum - 1):quotesperpage * pagenum]:
-              if str(quotes.index(quote)) in line.split()[len(str(message.guild).split()):]:
+              if str(quotes.index(quote)) in line.split()[1:]:
                 quotelist = quotelist + "\n" + str(quotes.index(quote) + 1) + ". " + quote
               else:
                 quotelist = quotelist + "\n" + str(quotes.index(quote) + 1) + ". ???"
-            quotesfound = len(line.split()) - len(str(message.guild).split())
+            quotesfound = len(line.split()[1:])
             serverfoundinquotelists = True
             break
         if serverfoundinquotelists == False:
@@ -262,12 +262,12 @@ async def on_message(message):
         elif int(message.content.split()[1]) < 1 or int(message.content.split()[1]) > len(quotes):
           await message.channel.send("That's not a valid number, dummy!")
         else:
-          if str(message.guild) == "None":
-            await message.channel.send("You need to be in a server to use that command.")
+          if message.channel.type is discord.ChannelType.private:
+            await message.channel.send("You need to be in a server get specific quotes.")
             return
           with open("variables/userquotes.txt","r") as quotedata:
             for line in str(quotedata.read()).split("\n"):
-              if str(message.guild) in str(line):
+              if str(message.guild.id) in str(line):
                 if str(int(message.content.split()[1]) - 1) in str(line).split():
                   await message.channel.send(quotes[int(message.content.split()[1]) - 1])
                   return
@@ -277,11 +277,13 @@ async def on_message(message):
         quotenum = rand.randint(0, len(quotes) - 1)
         await message.channel.send(quotes[quotenum])
         setlatestquote(quotes[quotenum])
+        if message.channel.type is discord.ChannelType.private:
+          return
         with open('variables/userquotes.txt', 'r') as quotedata:
           quotedatavar = quotedata.read()
           quotedatalines = quotedatavar.split("\n")
           for line in quotedatavar.split("\n"):
-            if str(message.guild) == str(line[:len(str(message.guild))]):
+            if str(message.guild.id) == str(line[0]):
               if not str(quotenum) in line.split():
                 quotedatalines[quotedatalines.index(line)] += str(" " + str(quotenum))
                 newquotedata = ""
@@ -290,9 +292,9 @@ async def on_message(message):
                 with open("variables/userquotes.txt", "w") as quotedata:
                   quotedata.write(newquotedata)
                 return
-          if not str(message.guild) in str(quotedatavar):
+          if not str(message.guild.id) in str(quotedatavar):
             with open("variables/userquotes.txt", "w") as quotedataw:
-              quotedataw.write(str(quotedatavar) + str(message.guild) + " " + str(quotenum) + "\n")
+              quotedataw.write(str(quotedatavar) + str(message.guild.id) + " " + str(quotenum) + "\n")
     #create the message without punctuation
     messagenopunc = ""
     for char in message.content:
@@ -319,33 +321,61 @@ async def on_message(message):
       await message.channel.send("Hey, that's my line!")
     #if the message is $quiz, start a quiz
     if message.content == "$quiz":
-      quotenum = rand.randint(0, len(quotes) - 1)
-      quoteplain = ""
-      for char in quotes[quotenum]:
-        if char == ":":
-          quoteplain = ""
-        elif char == " " and quoteplain == "":
-          quoteplain = ""
+      if rand.randint(0, 1) == 0:
+        quotenum = rand.randint(0, len(quotes) - 1)
+        quoteplain = ""
+        for char in quotes[quotenum]:
+          if char == ":":
+            quoteplain = ""
+          elif char == " " and quoteplain == "":
+            quoteplain = ""
+          else:
+            quoteplain = quoteplain + char
+        embedVar = discord.Embed(title=str(quoteplain), description="Was this quote from Paul Blart: Mall Cop 1 or 2?", color=0x00ddff)
+        msg = await message.channel.send(embed=embedVar)
+        await msg.add_reaction('1️⃣')
+        await msg.add_reaction('2️⃣')
+        def check(reaction, user):
+          return user == message.author and (str(reaction.emoji) == '1️⃣' or str(reaction.emoji) == '2️⃣') and reaction.message.id == msg.id
+        try:
+          reaction, user = await client.wait_for('reaction_add', timeout=60.0, check=check)
+        except asyncio.TimeoutError:
+          await message.channel.send("Time's up! You took too long.")
         else:
-          quoteplain = quoteplain + char
-      embedVar = discord.Embed(title=str(quoteplain), description="Was this quote from Paul Blart: Mall Cop 1 or 2?", color=0x00ddff)
-      msg = await message.channel.send(embed=embedVar)
-      await msg.add_reaction('1️⃣')
-      await msg.add_reaction('2️⃣')
-      def check(reaction, user):
-        return user == message.author and (str(reaction.emoji) == '1️⃣' or str(reaction.emoji) == '2️⃣') and reaction.message.id == msg.id
-      try:
-        reaction, user = await client.wait_for('reaction_add', timeout=60.0, check=check)
-      except asyncio.TimeoutError:
-        await message.channel.send("Time's up! You took too long.")
+          if (str(reaction.emoji) == '1️⃣' and quotemovies[quotenum] == 1) or (str(reaction.emoji) == '2️⃣' and quotemovies[quotenum] == 2):
+            await message.channel.send('Yeah! You got it!')
+            quotewin()
+          else:
+            await message.channel.send('You got it wrong :(')
+            quoteloss()
+          downcomm()
       else:
-        if (str(reaction.emoji) == '1️⃣' and quotemovies[quotenum] == 1) or (str(reaction.emoji) == '2️⃣' and quotemovies[quotenum] == 2):
-          await message.channel.send('Yeah! You got it!')
-          quotewin()
+        #if len(message.content.split()) == 2:
+          #questionnum = int(message.content.split()[1]) - 1
+        #else:
+        questionnum = rand.randint(0, len(triviaquestions) - 1)
+        answers = [triviaanswers[questionnum * 4], triviaanswers[questionnum * 4 + 1], triviaanswers[questionnum * 4 + 2], triviaanswers[questionnum * 4 + 3]]
+        answerrand = [answers.pop(rand.randint(0, 3)), answers.pop(rand.randint(0, 2)), answers.pop(rand.randint(0, 1)), answers.pop(0)]
+        embedVar = discord.Embed(title=str(triviaquestions[questionnum]), description="A. " + answerrand[0] + "\nB. " + answerrand[1] + "\nC. " + answerrand[2] + "\nD. " + answerrand[3], color=0x4287f5)
+        msg = await message.channel.send(embed=embedVar)
+        await msg.add_reaction('🇦')
+        await msg.add_reaction('🇧')
+        await msg.add_reaction('🇨')
+        await msg.add_reaction('🇩')
+        def check(reaction, user):
+          return user == message.author and (str(reaction.emoji) == '🇦' or str(reaction.emoji) == '🇧' or str(reaction.emoji) == '🇨' or str(reaction.emoji) == '🇩') and reaction.message.id == msg.id
+        try:
+          reaction, user = await client.wait_for('reaction_add', timeout=60.0, check=check)
+        except asyncio.TimeoutError:
+          await message.channel.send("Time's up! You took too long.")
         else:
-          await message.channel.send('You got it wrong :(')
-          quoteloss()
-        downcomm()
+          if (str(reaction.emoji) == '🇦' and answerrand[0] == triviaanswers[questionnum * 4]) or (str(reaction.emoji) == '🇧' and answerrand[1] == triviaanswers[questionnum * 4]) or (str(reaction.emoji) == '🇨' and answerrand[2] == triviaanswers[questionnum * 4]) or (str(reaction.emoji) == '🇩' and answerrand[3] == triviaanswers[questionnum * 4]):
+            await message.channel.send('Yeah! You got it!')
+            quotewin()
+          else:
+            await message.channel.send('You got it wrong :(')
+            quoteloss()
+          downcomm()
     if message.content.startswith("$blartify"):
       virginoftheblartification = "" #this is the best variable i've ever named
       for word in message.content.split()[1:]:
@@ -423,33 +453,6 @@ async def on_message(message):
       await message.channel.send(file=discord.File('memes/cum.mp4'))
     if message.content == "$snake":
       await message.channel.send(file=discord.File('memes/snake.mp4'))
-    if message.content.startswith("$trivia"):
-      if len(message.content.split()) == 2:
-        questionnum = int(message.content.split()[1]) - 1
-      else:
-        questionnum = rand.randint(0, len(triviaquestions) - 1)
-      answers = [triviaanswers[questionnum * 4], triviaanswers[questionnum * 4 + 1], triviaanswers[questionnum * 4 + 2], triviaanswers[questionnum * 4 + 3]]
-      answerrand = [answers.pop(rand.randint(0, 3)), answers.pop(rand.randint(0, 2)), answers.pop(rand.randint(0, 1)), answers.pop(0)]
-      embedVar = discord.Embed(title=str(triviaquestions[questionnum]), description="A. " + answerrand[0] + "\nB. " + answerrand[1] + "\nC. " + answerrand[2] + "\nD. " + answerrand[3], color=0x4287f5)
-      msg = await message.channel.send(embed=embedVar)
-      await msg.add_reaction('🇦')
-      await msg.add_reaction('🇧')
-      await msg.add_reaction('🇨')
-      await msg.add_reaction('🇩')
-      def check(reaction, user):
-        return user == message.author and (str(reaction.emoji) == '🇦' or str(reaction.emoji) == '🇧' or str(reaction.emoji) == '🇨' or str(reaction.emoji) == '🇩') and reaction.message.id == msg.id
-      try:
-        reaction, user = await client.wait_for('reaction_add', timeout=60.0, check=check)
-      except asyncio.TimeoutError:
-        await message.channel.send("Time's up! You took too long.")
-      else:
-        if (str(reaction.emoji) == '🇦' and answerrand[0] == triviaanswers[questionnum * 4]) or (str(reaction.emoji) == '🇧' and answerrand[1] == triviaanswers[questionnum * 4]) or (str(reaction.emoji) == '🇨' and answerrand[2] == triviaanswers[questionnum * 4]) or (str(reaction.emoji) == '🇩' and answerrand[3] == triviaanswers[questionnum * 4]):
-          await message.channel.send('Yeah! You got it!')
-          triviawin()
-        else:
-          await message.channel.send('You got it wrong :(')
-          trivialoss()
-        downcomm()
     if message.content.startswith("$status") and str(message.author) == "Comp Arison#1337":
       if message.content.split()[1].lower() == "playing":
         await client.change_presence(activity=discord.Game(name=message.content.replace('$status playing ', '')))
@@ -477,15 +480,15 @@ async def on_message(message):
               quotedatavar = quotedata.read()
               quotedatalines = quotedatavar.split("\n")
               for line in quotedatavar.split("\n"):
-                if str(message.guild) in str(line):
-                  quotedatalines[quotedatalines.index(line)] = str(message.guild)
+                if str(message.guild.id) in str(line):
+                  quotedatalines[quotedatalines.index(line)] = str(message.guild.id)
                   newquotedata = ""
                   for lines in quotedatalines[:-1]:
                     newquotedata = newquotedata + lines + "\n"
                   with open("variables/userquotes.txt", "w") as quotedata:
                     quotedata.write(newquotedata)
                   return
-              if not str(message.guild) in str(quotedatavar):
+              if not str(message.guild.id) in str(quotedatavar):
                 await message.channel.send("You never had any quotes to begin with.")
           else:
             await message.channel.send("Okay then, I won't. (phew)")
@@ -1103,7 +1106,7 @@ async def on_message(message):
       embedVar.set_footer(text="Sometimes, you just want to start over.")
       await message.channel.send(embed=embedVar)
     if message.content == "$help quiz":
-      embedVar = discord.Embed(title="$quiz", description="Welcome to Jeoblarty! You're given a quote, and you have to guess whether it was from Paul Blart: Mall Cop 1 or 2!", color=0xffff00)
+      embedVar = discord.Embed(title="$quiz", description="Welcome to Jeoblarty! Test your knowledge on the Paul Blart cinematic universe!", color=0xffff00)
       embedVar.set_footer(text='What is "Foot Locker"?')
       await message.channel.send(embed=embedVar)
     if message.content == "$help blartify":
@@ -1116,8 +1119,176 @@ async def on_message(message):
       await message.channel.send(embed=embedVar)
     if message.content == "$help arrest":
       embedVar = discord.Embed(title="$arrest [user]", description="Puts the mentioned user under citizens arrest.", color=0xffff00)
-      embedVar.set_footer(text="You could also arrest ")
+      embedVar.set_footer(text="You could also arrest anything you want.")
       await message.channel.send(embed=embedVar)
+    if message.content == "$help citation":
+      embedVar = discord.Embed(title="$citation [Written to]; [Reason]; [Penalty]", description="Generates a citation. Use ; to go to the next line.", color=0xffff00)
+      embedVar.set_footer(text="Great for Paul Blart: Mall Cop roleplay.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help meme":
+      embedVar = discord.Embed(title="$meme [text]", description="Generates a Paul Blart: Mall Cop DVD cover meme. If you want more control, use ; to separate the lines manually. If you want even MORE control, use $complexmeme to have the command act like a grid, starting from the top left, with ; as a separator, and spaces taking up half the normal length.", color=0xffff00)
+      embedVar.set_footer(text="Tip: Use * for stars.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help buy":
+      embedVar = discord.Embed(title="$buy [ammount]", description="Buys up to 100 Blartcoins. You can buy Blartcoins even if you don't have enough money.", color=0xffff00)
+      embedVar.set_footer(text="Tip: You can do $buy max to buy as much as you can.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help sell":
+      embedVar = discord.Embed(title="$sell [ammount]", description="Sells the ammount of Blartcoins you say.", color=0xffff00)
+      embedVar.set_footer(text="Tip: You can do $sell max to sell as much as you can.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help mine":
+      embedVar = discord.Embed(title="$mine", description="Get a free Blartcoin by solving a math equation.", color=0xffff00)
+      embedVar.set_footer(text="It's like mining real crypto, except you're the computer.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help give":
+      embedVar = discord.Embed(title="$give [user] [ammount]", description="Gives Blartcoins to the mentioned user.", color=0xffff00)
+      embedVar.set_footer(text="Don't even try to put a negative number.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help bankruptcy":
+      embedVar = discord.Embed(title="$bankruptcy", description="Resets your balance after asking for confirmation.", color=0xffff00)
+      embedVar.set_footer(text="Tip: You can use this to you're advantage in some cases.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help bal" or message.content == "$help balance":
+      embedVar = discord.Embed(title="$" + message.content[6:], description="Tells you how many Blartcoins and how much money you have.", color=0xffff00)
+      embedVar.set_footer(text="This information is also on $stock.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help leaderboard" or message.content == "$help lb":
+      embedVar = discord.Embed(title="$" + message.content[6:], description="Shows the list of the top 10 richest people and tells you what place you're in.", color=0xffff00)
+      embedVar.set_footer(text="You could say these are the Wolves of Blartstreet.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help cum":
+      embedVar = discord.Embed(title="$cum", description="Secret Command 1 of 3.", color=0xffff00)
+      embedVar.set_footer(text="haha funny")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help wakeup":
+      embedVar = discord.Embed(title="$wakeup", description="Secret Command 2 of 3.", color=0xffff00)
+      embedVar.set_footer(text="That's Veck's face, by the way.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help snake":
+      embedVar = discord.Embed(title="$snake", description="Secret Command 3 of 3.", color=0xffff00)
+      embedVar.set_footer(text="Did you hear footsteps?")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help guide":
+      embedVar = discord.Embed(title="$guide", description="The Shopper's Guide to the West Orange Pavilion Mall is a wholly remarkable book.\nIn fact it was probably the most remarkable book ever to come out of the great publishing houses of West Orange - of which no New Jersian had ever heard either.\nNot only is it a wholly remarkable book, it is also a highly successful one - more popular than the Hypoglycemia Treatment Omnibus, better selling than Fifty More Things to do on a Segway, and more controversial than Veck Simms's trilogy of petty blockbusters Where Paul Blart Went Wrong, Some More of Paul Blart's Greatest Mistakes and Who is this Paul Blart Person Anyway?\nIn many of the more relaxed civilizations on the Outer Western Rim of the Orange County, the Shopper's Guide has already supplanted the great Encyclopedia Blartica as the standard repository of all knowledge and wisdom, for though it has many omissions and contains much that is apocryphal, or at least wildly inaccurate, it scores over the older, more pedestrian work in two important respects.\nFirst, it is slightly cheaper; and secondly it has the words DON'T MESS WITH HIS MALL! inscribed in large friendly letters on its cover.", color=0xffff00)
+      embedVar.set_footer(text="Look out for our next book: The Rainforest Cafe at the End of the Universe.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$guide":
+      #embedVar.add_field(name="", value="", inline=False)
+      embedVar = discord.Embed(title="The Shopper's Guide to the West Orange Pavilion Mall", description="A wholly remarkable book.", color=0xffffff)
+      embedVar.set_author(name="Click to visit my website.", url="https://paul-blart-mall-bot.nathanboehm.repl.co/", icon_url="https://cdn.discordapp.com/attachments/529558484208058370/818986642483183665/icon.png")
+      embedVar.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/818990652854370314/help_menu.png")
+      embedVar.add_field(name="1. What is a Blartcoin?", value="Find out the origins of this mysterious economy.", inline=False)
+      embedVar.add_field(name="2. Behavior of the Stock Market", value="Learn the ins and outs of the Stock Market.", inline=False)
+      embedVar.add_field(name="3. When to Buy And Sell", value="Learn from the pros and become one yourself.", inline=False)
+      embedVar.set_footer(text="The best drink in existence is the Insane Lemonade, the effect of which is like smashing through a window while dancing to Runaway by Bon Jovi.")
+      msg = await message.channel.send(embed=embedVar)
+      await msg.add_reaction('🔢')
+      await msg.add_reaction('1️⃣')
+      await msg.add_reaction('2️⃣')
+      await msg.add_reaction('3️⃣')
+      def check(reaction, user):
+        return user == message.author and (str(reaction.emoji) == '🔢' or str(reaction.emoji) == '1️⃣' or str(reaction.emoji) == '2️⃣' or str(reaction.emoji) == '3️⃣') and reaction.message.id == msg.id
+      async def guidepage():
+        try:
+          reaction, user = await client.wait_for('reaction_add', timeout=300.0, check=check)
+        except asyncio.TimeoutError:
+          pass
+        else:
+          if str(reaction.emoji) == '🔢':
+            embedVar = discord.Embed(title="The Shopper's Guide to the West Orange Pavilion Mall", description="A wholly remarkable book.", color=0xffffff)
+            embedVar.set_author(name="Click to visit my website.", url="https://paul-blart-mall-bot.nathanboehm.repl.co/", icon_url="https://cdn.discordapp.com/attachments/529558484208058370/818986642483183665/icon.png")
+            embedVar.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/818990652854370314/help_menu.png")
+            embedVar.add_field(name="1. What is a Blartcoin?", value="Find out the origins of this mysterious economy.", inline=False)
+            embedVar.add_field(name="2. Behavior of the Stock Market", value="Learn the ins and outs of the Stock Market.", inline=False)
+            embedVar.add_field(name="3. When to Buy And Sell", value="Learn from the pros and become one yourself.", inline=False)
+            embedVar.set_footer(text="The best drink in existence is the Insane Lemonade, the effect of which is like smashing through a window while dancing to Runaway by Bon Jovi.")
+            await msg.edit(embed=embedVar)
+          if str(reaction.emoji) == '1️⃣':
+            embedVar = discord.Embed(title="The Shopper's Guide to the West Orange Pavilion Mall", description="A wholly remarkable book.", color=0xffffff)
+            embedVar.set_author(name="Click to visit my website.", url="https://paul-blart-mall-bot.nathanboehm.repl.co/", icon_url="https://cdn.discordapp.com/attachments/529558484208058370/818986642483183665/icon.png")
+            embedVar.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/818990652854370314/help_menu.png")
+            embedVar.add_field(name="1. What is a Blartcoin?", value="Blartcoin (Often abreviated as BLTC) is the cryptocurrency taking the West Orange Pavilion Mall by storm. It was invented by freak accident after security officer Paul Blart tried to download Minesweeper on his TI-83 calculator. Interestingly, this currency is not accepted by any store, and it can only be converted to West Orange Pavilion Mall in-store credit. BLTC can be purchased and sold through any of the Mall's ATMs or the International Blartcoin Exhange Service. They can also be mined, though this method differs from mining other cryptocurrency. When mining other crypto, a computer is tasked with solving an extremely difficult equation. When an equation is solved, the user is rewarded with some of the currency. With BLTC, these equations are inexplicably easy, removing the need for a computer to solve them.", inline=False)
+            embedVar.set_footer(text="It's also a hit with the AnCaps.")
+            await msg.edit(embed=embedVar)
+          if str(reaction.emoji) == '2️⃣':
+            embedVar = discord.Embed(title="The Shopper's Guide to the West Orange Pavilion Mall", description="A wholly remarkable book.", color=0xffffff)
+            embedVar.set_author(name="Click to visit my website.", url="https://paul-blart-mall-bot.nathanboehm.repl.co/", icon_url="https://cdn.discordapp.com/attachments/529558484208058370/818986642483183665/icon.png")
+            embedVar.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/818990652854370314/help_menu.png")
+            embedVar.add_field(name="2. Behavior of the Stock Market", value="The value of a Blartcoin will never go below $1 and it will never go above $100. The Mall Jones Index works in ticks. A tick happens every 60 seconds. The value of a Blartcoin is determined by 5 different patterns. These patterns determine the change in price of a Blartcoin. The patterns are random (between -$2 and +$2), slow rise (between -$1 and +$2), fast rise (between -$1 and +$3), slow fall (between -$2 and +$1), and fast fall (between -$3 and -$1). The patterns change every 3 to 6 ticks.", inline=False)
+            embedVar.set_footer(text="This information is available thanks to faulty cybersecurity.")
+            await msg.edit(embed=embedVar)
+          if str(reaction.emoji) == '3️⃣':
+            embedVar = discord.Embed(title="The Shopper's Guide to the West Orange Pavilion Mall", description="A wholly remarkable book.", color=0xffffff)
+            embedVar.set_author(name="Click to visit my website.", url="https://paul-blart-mall-bot.nathanboehm.repl.co/", icon_url="https://cdn.discordapp.com/attachments/529558484208058370/818986642483183665/icon.png")
+            embedVar.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/818990652854370314/help_menu.png")
+            embedVar.add_field(name="3. When to Buy And Sell", value="The average price of a Blartcoin is about $14. The International Blartcoin Exchange Service charges a service fee of 20%, so you need to sell when the price increases by 20% of what it was to make a profit. You don't have to worry about the service fee as long as you buy as much as you can when it's lower than $5 and sell everything when it's above $15 or so.", inline=False)
+            embedVar.set_footer(text="The International Blartcoin Exchange Service currently has a monopoly on all Blartcoin exchange, as no one else has bothered to capitalize on the market.")
+            await msg.edit(embed=embedVar)
+          await guidepage()
+      await guidepage()
+    if message.content == "$mall":
+      #embedVar.add_field(name="", value="", inline=False)
+      embedVar = discord.Embed(title="The West Orange Pavilion Mall", description="Welcome to the West Orange Pavilion Mall's online store! Use $purchase followed by the product number to buy things.", color=0xffffff)
+      embedVar.set_author(name="Click to visit my website.", url="https://paul-blart-mall-bot.nathanboehm.repl.co/", icon_url="https://cdn.discordapp.com/attachments/529558484208058370/818986642483183665/icon.png")
+      embedVar.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/818990652854370314/help_menu.png")
+      embedVar.add_field(name="1. Unlock a random locked quote.\n$10.00", value="Unlocks a random quote that hasn't been unlocked yet for this server.", inline=False)
+      embedVar.add_field(name="2. Sponsored message.\n$25.00", value="Sets the footer text on this page to whatever you want*. This affect remains until someone purchases it again.\n*Profanity is automatically blartified.", inline=False)
+      embedVar.set_footer(text=db["sponsoredmessage"])
+      await message.channel.send(embed=embedVar)
+    if message.content == "$purchase 1":
+      msg = await message.channel.send("Do you want to unlock a random locked quote for $10.00?")
+      await msg.add_reaction('✅')
+      await msg.add_reaction('❎')
+      def check(reaction, user):
+        return user == message.author and (str(reaction.emoji) == '✅' or str(reaction.emoji) == '❎') and reaction.message.id == msg.id
+      try:
+        reaction, user = await client.wait_for('reaction_add', timeout=60.0, check=check)
+      except asyncio.TimeoutError:
+        await message.channel.send("You took too long.")
+      else:
+        if str(reaction.emoji) == '✅':
+          quotenum = rand.randint(0, len(quotes) - 1)
+          with open('variables/userquotes.txt', 'r') as quotedata:
+            quotedatavar = quotedata.read()
+            quotedatalines = quotedatavar.split("\n")
+            for line in quotedatavar.split("\n"):
+              if str(message.guild.id) == str(line.split()[0]):
+                with open('variables/userbalances.txt', 'r') as userbalances:
+                  balancesvar = userbalances.read()
+                  balancelines = balancesvar.split("\n")
+                  for balline in balancesvar.split("\n"):
+                    if str(message.author.id) == str(line.split()[0]):
+                      usermoneybalance = float(balline.split()[2])
+                      usercoinbalance = int(balline.split()[1])
+                      if usermoneybalance < 10:
+                        await message.channel.send("You don't have enough money.")
+                        return
+                      else:
+                        usermoneybalance = usermoneybalance - 10
+                        balancelines[balancelines.index(balline)] = str(message.author.id) + " " + str(usercoinbalance) + (" {0:.2f}").format(usermoneybalance)
+                        newbalance = ""
+                        for ballines in balancelines[:-1]:
+                          newbalance = newbalance + ballines + "\n"
+                        with open("variables/userbalances.txt", "w") as userbalancesw:
+                          userbalancesw.write(newbalance)
+                  if not str(message.author.id) in str(balancesvar):
+                    await message.channel.send("You don't have any money. You can make money by investing in Blartcoin.")
+                    return
+                while str(quotenum) in line.split()[1:]:
+                  quotenum = rand.randint(0, len(quotes) - 1)
+                quotedatalines[quotedatalines.index(line)] += str(" " + str(quotenum))
+                newquotedata = ""
+                for lines in quotedatalines[:-1]:
+                  newquotedata = newquotedata + lines + "\n"
+                with open("variables/userquotes.txt", "w") as quotedata:
+                  quotedata.write(newquotedata)
+                await message.channel.send("Thanks for shopping! Your quote is:\n" + quotes[quotenum])
+                return
+          if not str(message.guild.id) in str(quotedatavar):
+            await message.channel.send("This server hasn't unlocked any quotes yet. You can just use $quote and get one for free.")
+        else:
+          await message.channel.send("Okay then.")
   #except:
   #  pass
 
