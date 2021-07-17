@@ -1,16 +1,12 @@
 '''
 Paul Blart: Mall Bot
 Created by Nathan Boehm
-Special thanks to freeCodeCamp.org for making this video, which helped me get this thing up and running:
-https://www.youtube.com/watch?v=SPTfmiYiuok
-Also thanks to Tajomstvo, who made the html for the website.
-Also also thanks to the Tracle.tv Discord server, for being generally cool.
-And finally, thanks to Kevin James for blessing this Earth.
+Yes I know I'm using an outdated method to make this but I'm in too deep.
+I'll gladly accept any code if someone updates it for me.
 TODO:
 Start looking for website domains
 Make a permanent fix to the stock market data loss bug
-Hangman with the quotes
-Who wants to be a millionaire based quiz command
+Endless quiz command
 Potential store items:
 Additional stock market statistics like how much you would make if you sold at that moment
 '''
@@ -32,27 +28,91 @@ import threading
 import random as rand
 import asyncio
 
-quotesperpage = 15 #how many quotes appear on each page of the quote list
+quotesperpage = 16 #how many quotes appear on each page of the quote list
 admins = ["Comp Arison#1337", "Joe Mama#7284", "ZetaPrime77#9420"]
-quotes = ["I don't drink.", "Yello-ha!", "Windershins!", "FOOT LOCKER!", "I WILL CRAWL INSIDE YOU AND LAY EGGS LIKE A BABY SPIDER!", "I don't care, I'm going double parm.", "Not today, death!", "The mind is the only weapon that doesn't need a holster.", "Safety never takes a holiday.", "Chicken chow LANE?", "Help someone today.", "No one wins with a headbutt.", "I know a lot about sharks.", '''I'll meet you on the corner of "ne" and "ver".''', "Ladies? Problem. What's the genesis?", "I do have the authority to make a citizen's arrest.", "This lemonade is insane!", "Hold the mayo.", "Veck: I would love a happy meal.", "Pahud: Peanut Blart and Jelly!", "Donna: Robocop ain't real.", "Always bet on Blart.", "That's one brown banana.", "Leon: Were you serious about that happy meal?", "Hey. Paul Blart. Ten-year veteran.", "Take a dip!", "We live as we dream. Alone.", "It's a bad day to be bad people.", "Knot-jump!", "I'm a lone cowboy.", "I believe in magic!", "Veck: Give me a gun.", "Scuba Dooby-Doo.", "Suck on that!", "Amy: Go to hell.", "Twist it. Feel the nub.", "We eat to fill a void."]
-quotemovies = [1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1]
+quotes = ["I don't drink.", "Yello-ha!", "Windershins!", "FOOT LOCKER!", "I WILL CRAWL INSIDE YOU AND LAY EGGS LIKE A BABY SPIDER!", "I don't care, I'm going double parm.", "Not today, death!", "The mind is the only weapon that doesn't need a holster.", "Safety never takes a holiday.", "Chicken chow LANE?", "Help someone today.", "No one wins with a headbutt.", "I know a lot about sharks.", '''I'll meet you on the corner of "ne" and "ver".''', "Ladies? Problem. What's the genesis?", "I do have the authority to make a citizen's arrest.", "This lemonade is insane!", "Hold the mayo.", "Veck: I would love a happy meal.", "Pahud: Peanut Blart and Jelly!", "Donna: Robocop ain't real.", "Always bet on Blart.", "That's one brown banana.", "Leon: Were you serious about that happy meal?", "Hey. Paul Blart. Ten-year veteran.", "Take a dip!", "We live as we dream. Alone.", "It's a bad day to be bad people.", "Knot-jump!", "I'm a lone cowboy.", "I believe in magic!", "Veck: Give me a gun.", "Scuba Dooby-Doo.", "Suck on that!", "Amy: Go to hell.", "Twist it. Feel the nub.", "We eat to fill a void.", "Veck: BLART! *gunshots*", "It's your classic two-bird one-stone scenario.", "I don't joke about shopper safety.", "Peanut butter. It fills the cracks of the heart.", "Right now, I'm goose egg for eight.", "Still got the Baggies!", "Hot jiggity.", '''Veck: My mom always said, "If you want something done right, waste the guy yourself." I'm paraphrasing, of course.''', "Veck: I wish I had a bat. I would bust you open, see how much candy fell out."]
+quotemovies = [1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 if len(quotes) != len(quotemovies):
   print("Quote mismatch!\n Length of quotes: " + str(len(quotes)) + "\nLength of quotemovies: " + str(len(quotemovies)))
 
-paulwords = ["paul", "palm", "qualm", "yawn", "pail", "pale", "pom", "tom", "god", "tod", "scott", "pre", "shit", "pie", "pon", "price", "poop", "tracle", "tracl", "pol", "dick", "pussy", "au", "nathan", "soul", "awe", "piss", "pant", "david", "jacob", "robert", "rachel", "jay", "pre", "fool"]
+paulwords = ["paul", "palm", "qualm", "yawn", "pail", "pale", "pom", "tom", "god", "tod", "scott", "pre", "shit", "pie", "pon", "price", "poop", "tracle", "tracl", "pol", "dick", "pussy", "au", "nathan", "soul", "awe", "piss", "pant", "david", "jacob", "robert", "rachel", "jay", "pre", "fool", "penis"]
 blartwords = ["blart", "card", "earth", "cart", "dart", "fart", "mart", "part", "heart", "dark", "start", "narc", "lard", "thwart", "wart", "guard", "car", "bart", "blurt", "blur", "burn", "art", "hard", "nox", "brew", "bath", "wat", "bout", "bitch", "bare", "drown", "bruh", "break", "fort", "block", "blown", "blow", "bet", "hulk", "boehm", "back", "tard", "be", "stock", "bit", "swan", "buck", "sus", "holl", "hol"]
-mallwords = ["mall", "call", "fall", "moon", "ball", "bell", "tall", "small", "hall", "jail", "lol", "wall", "yall", "y'all", "all", "odd", "man", "jar", "mell", "ass", "mean", "meal", "troll", "doll", "wack", "damn", "mark", "dow", "nigg", "tell", "sell", "al"]
-copwords = ["cop", "pop", "mop", "bot", "top", "bop", "fap", "gap", "hop", "cat", "wap", "cap", "cough", "con", "lot", "fuck", "kill", "corp", "cum", "cun", "come", "comp", "com", "keep", "show", "clip", "cock", "clock"]
+mallwords = ["mall", "call", "fall", "moon", "ball", "bell", "tall", "small", "hall", "jail", "lol", "wall", "yall", "y'all", "all", "odd", "man", "jar", "mell", "ass", "mean", "meal", "troll", "doll", "wack", "damn", "mark", "dow", "nigg", "tell", "sell", "al", "vagina"]
+copwords = ["cop", "pop", "mop", "bot", "top", "bop", "fap", "gap", "hop", "cat", "wap", "cap", "cough", "con", "lot", "fuck", "kill", "corp", "cum", "cun", "come", "comp", "com", "keep", "show", "clip", "cock", "clock", "cuck"]
 
-censoredpaulwords = ["paul", "shit", "dick", "pussy", "piss"]
+censoredpaulwords = ["paul", "shit", "dick", "pussy", "piss", "penis"]
 censoredblartwords = ["blart", "bitch", "retard", "tit"]
-censoredmallwords = ["mall", "ass", "damn", "nigg"]
+censoredmallwords = ["mall", "ass", "damn", "nigg", "vagina"]
 censoredcopwords = ["cop", "fuck", "cum", "cock", "cunt", "nazi", "kill"]
 
-#All questions must have 4 coresponding answers. The first answer in the set is the right one.
-triviaquestions = ["How many stores are in the West Orange Pavilion Mall?", "What is Veck's last name?", "What song was Paul rocking to in Paul Blart: Mall Cop?", "What food is Vincent from Paul Blart: Mall Cop 2 alergic to?", "What does Muhrtell from Paul Blart: Mall Cop 2 eat during his lunch break?", "Where does Maya work in Paul Blart: Mall Cop?", "How long does Paul Blart get for lunch?", "When was Paul Blart: Mall Cop released?", "When was Paul Blart: Mall Cop 2 released?"]
-triviaanswers = ["223", "38", "204", "46", "Simms", "Claus", "Vill", "Smith", "Detroit Rock City", "Taking Care Of Business", "Get Up", "Here It Goes Again", "Oatmeal", "Strawberries", "Peanuts", "Seafood", "An old Banana", "Oatmeal", "A raw egg", "Ice cubes", "Foot Locker", "Dunkin' Donuts", "GameStop", "Subway", "Half an hour. But he eats in 20, which leaves him 5 minutes for social time, 5 minutes to get refocused.", "Half an hour. But he eats in 15, which leaves him 10 minutes for social time, 5 minutes to get refocused.", "20 minutes. But he eats in 10, which leaves him 5 minutes for social time, 5 minutes to get refocused.", "40 minutes. But he eats in 20, which leaves him 10 minutes for social time, 10 minutes to get refocused.", "January 16, 2009", "March 27, 2009", "April 17, 2009", "December 9, 2008", "April 17, 2015", "November 26, 2015", "January 16, 2015", "May 8, 2015"]
+#All questions must have 4 corresponding answers. The first answer in the set is the right one.
+triviaquestions = ["How many stores are in the West Orange Pavilion Mall?", "What is Veck's last name?", "What song was Paul rocking to in Paul Blart: Mall Cop?", "What food is Vincent from Paul Blart: Mall Cop 2 allergic to?", "What does Muhrtell from Paul Blart: Mall Cop 2 eat during his lunch break?", "Where does Maya work in Paul Blart: Mall Cop?", "How long does Paul Blart get for lunch?", "When was Paul Blart: Mall Cop released?", "When was Paul Blart: Mall Cop 2 released?", "What car does Amy own?"]
+triviaanswers = ["223", "38", "204", "46", "Simms", "Claus", "Vill", "Smith", "Detroit Rock City", "Taking Care Of Business", "Get Up", "Here It Goes Again", "Oatmeal", "Strawberries", "Peanuts", "Seafood", "An old Banana", "Oatmeal", "A raw egg", "Ice cubes", "Foot Locker", "Dunkin' Donuts", "GameStop", "Subway", "Half an hour. But he eats in 20, which leaves him 5 minutes for social time, 5 minutes to get refocused.", "Half an hour. But he eats in 15, which leaves him 10 minutes for social time, 5 minutes to get refocused.", "20 minutes. But he eats in 10, which leaves him 5 minutes for social time, 5 minutes to get refocused.", "40 minutes. But he eats in 20, which leaves him 10 minutes for social time, 10 minutes to get refocused.", "January 16, 2009", "March 27, 2009", "April 17, 2009", "December 9, 2008", "April 17, 2015", "November 26, 2015", "January 16, 2015", "May 8, 2015", "'65 Mustang", "P-51 Mustang", "P-65 Mustang", "None of the above."]
 
+hangmanpics = [
+'''
+  +---+
+  |   |
+      |
+      |
+      |
+      |
+=========
+''',
+''' 
+  +---+
+  |   |
+  O   |
+      |
+      |
+      |
+=========
+''',
+'''
+  +---+
+  |   |
+  O   |
+  |   |
+      |
+      |
+=========
+''',
+'''
+  +---+
+  |   |
+  O   |
+ /|   |
+      |
+      |
+=========
+''',
+'''
+  +---+
+  |   |
+  O   |
+ /|\  |
+      |
+      |
+=========
+''',
+'''
+  +---+
+  |   |
+  O   |
+ /|\  |
+   \  |
+      |
+=========
+''',
+'''
+  +---+
+  |   |
+  O   |
+ /|\  |
+ / \  |
+      |
+=========
+''']
 def plural(number):
   if int(number) == 1:
     return ""
@@ -189,6 +249,8 @@ async def on_message(message):
       embedVar.add_field(name="$mall", value="Shows you the store where you can buy things.", inline=False)
       embedVar.add_field(name="$help stock", value="Gives information about Blartcoins and the Blart Market.", inline=False)
       embedVar.add_field(name="$guide", value="A virtual book of everything you need to know about me.", inline=False)
+      embedVar.add_field(name="$hangman", value="Play a classic game of Hangman with Paul Blart quotes.", inline=False)
+      embedVar.add_field(name="$invite", value="I give you a link to invite me to other servers.", inline=False)
       embedVar.set_footer(text="There are also some secret commands. They're hidden somewhere, but I'm not telling!")
       await message.channel.send(embed=embedVar)
     #if the message is $quotelist or $quotes, say the list of quotes
@@ -229,8 +291,7 @@ async def on_message(message):
           embedVar.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/818993038478802954/quote_list.png")
           embedVar.add_field(name="My quotes are:", value=quotelist, inline=False)
           embedVar.add_field(name="This server has unlocked 0/" + str(len(quotes)) + " quotes.", value="0%", inline=False)
-          await message.channel.send(embed=embedVar)
-          return
+          msg = await message.channel.send(embed=embedVar)
         else:
           embedVar = discord.Embed(title="Quote List", description="Page " + str(pagenum) + " of " + str(round((len(quotes) / quotesperpage) + 0.5)), color=0xff7f00)
           embedVar.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/818993038478802954/quote_list.png")
@@ -239,8 +300,61 @@ async def on_message(message):
             embedVar.add_field(name="This server has unlocked " + str(quotesfound) + "/" + str(len(quotes)) + " quotes!", value=str(round(100 * float(quotesfound)/float(len(quotes)), 2)) + "%", inline=False)
           else:
             embedVar.add_field(name="This server has unlocked " + str(quotesfound) + "/" + str(len(quotes)) + " quotes.", value=str(round(100 * float(quotesfound)/float(len(quotes)), 2)) + "%", inline=False)
-          await message.channel.send(embed=embedVar)
-          return
+          msg = await message.channel.send(embed=embedVar)
+        await msg.add_reaction('1️⃣')
+        await msg.add_reaction('2️⃣')
+        await msg.add_reaction('3️⃣')
+        #await msg.add_reaction('4️⃣')
+        def check(reaction, user):
+          return user == message.author and (str(reaction.emoji) == '1️⃣' or str(reaction.emoji) == '2️⃣' or str(reaction.emoji) == '3️⃣' or str(reaction.emoji) == '4️⃣') and reaction.message.id == msg.id
+        async def quotepage():
+          try:
+            reaction, user = await client.wait_for('reaction_add', timeout=600.0, check=check)
+          except asyncio.TimeoutError:
+            pass
+          else:
+            if str(reaction.emoji) == '1️⃣':
+              pagenum = 1
+            elif str(reaction.emoji) == '2️⃣':
+              pagenum = 2
+            elif str(reaction.emoji) == '3️⃣':
+              pagenum = 3
+            #elif str(reaction.emoji) == '4️⃣':
+              #pagenum = 4
+            with open("variables/serverquotes.txt","r") as quotedata:
+              quotelist = ""
+              global serverfoundinquotelists
+              serverfoundinquotelists = False
+              global quotesfound
+              for line in str(quotedata.read()).split("\n"):
+                if str(message.guild.id) == str(line.split()[0]):
+                  for quote in quotes[quotesperpage * (pagenum - 1):quotesperpage * pagenum]:
+                    if str(quotes.index(quote)) in line.split()[1:]:
+                      quotelist = quotelist + "\n" + str(quotes.index(quote) + 1) + ". " + quote
+                    else:
+                      quotelist = quotelist + "\n" + str(quotes.index(quote) + 1) + ". ???"
+                  quotesfound = len(line.split()[1:])
+                  serverfoundinquotelists = True
+                  break
+            if serverfoundinquotelists == False:
+              for quote in quotes[quotesperpage * (pagenum - 1):quotesperpage * pagenum]:
+                quotelist = quotelist + "\n" + str(quotes.index(quote) + 1) + ". ???"
+              embedVar = discord.Embed(title="Quote List", description="Page " + str(pagenum) + " of " + str(round((len(quotes) / quotesperpage) + 0.5)), color=0xff7f00)
+              embedVar.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/818993038478802954/quote_list.png")
+              embedVar.add_field(name="My quotes are:", value=quotelist, inline=False)
+              embedVar.add_field(name="This server has unlocked 0/" + str(len(quotes)) + " quotes.", value="0%", inline=False)
+              await msg.edit(embed=embedVar)
+            else:
+              embedVar = discord.Embed(title="Quote List", description="Page " + str(pagenum) + " of " + str(round((len(quotes) / quotesperpage) + 0.5)), color=0xff7f00)
+              embedVar.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/818993038478802954/quote_list.png")
+              embedVar.add_field(name="My quotes are:", value=quotelist, inline=False)
+              if quotesfound == len(quotes):
+                embedVar.add_field(name="This server has unlocked " + str(quotesfound) + "/" + str(len(quotes)) + " quotes!", value=str(round(100 * float(quotesfound)/float(len(quotes)), 2)) + "%", inline=False)
+              else:
+                embedVar.add_field(name="This server has unlocked " + str(quotesfound) + "/" + str(len(quotes)) + " quotes.", value=str(round(100 * float(quotesfound)/float(len(quotes)), 2)) + "%", inline=False)
+              await msg.edit(embed=embedVar)
+            await quotepage()
+        await quotepage()
     #if the message starts with $quote, say a random quote (or say the quote the user specifies)
     if message.content == "$quote" or message.content.startswith("$quote "):
       if len(message.content.split()) > 1:
@@ -289,6 +403,7 @@ async def on_message(message):
       if char not in '''.,!?'"''':
         messagenopunc = messagenopunc + char
     #create every quote without punctuation
+    donewiththat = False
     for quote in quotes:
       quotenopunc = ""
       for char in quote:
@@ -299,17 +414,18 @@ async def on_message(message):
         elif char not in '''.,!?'"''':
           quotenopunc = quotenopunc + char
       #if the quote is somewhere in the message, say what movie it's from
-      if quotenopunc.lower() in messagenopunc.lower():
+      if quotenopunc.lower() in messagenopunc.lower() and donewiththat == False:
         if quotemovies[quotes.index(quote)] == 1:
           await message.channel.send("Hey, that's a quote from Paul Blart: Mall Cop!")
         else:
           await message.channel.send("Hey, that's a quote from Paul Blart: Mall Cop 2!")
+        donewiththat = True
     #if the message is mimicing Paul, make fun of them.
     if message.content == "Hey, that's a quote from Paul Blart: Mall Cop!" or message.content == "Hey, that's a quote from Paul Blart: Mall Cop 2!":
       await message.channel.send("Hey, that's my line!")
     #if the message is $quiz, start a quiz
     if message.content == "$quiz":
-      if rand.randint(0, 1) == 0:
+      if rand.randint(0, 1) == 0: #This command used to be two different commands. This if statement determines whether to start a quote quiz or a trivia quiz.
         quotenum = rand.randint(0, len(quotes) - 1)
         quoteplain = ""
         for char in quotes[quotenum]:
@@ -344,7 +460,10 @@ async def on_message(message):
         #else:
         questionnum = rand.randint(0, len(triviaquestions) - 1)
         answers = [triviaanswers[questionnum * 4], triviaanswers[questionnum * 4 + 1], triviaanswers[questionnum * 4 + 2], triviaanswers[questionnum * 4 + 3]]
-        answerrand = [answers.pop(rand.randint(0, 3)), answers.pop(rand.randint(0, 2)), answers.pop(rand.randint(0, 1)), answers.pop(0)]
+        if triviaanswers[questionnum * 4 + 3] == "None of the above." or triviaanswers[questionnum * 4 + 3] == "All of the above.":
+          answerrand = [answers.pop(rand.randint(0, 2)), answers.pop(rand.randint(0, 1)), answers.pop(0), answers.pop(0)]
+        else:
+          answerrand = [answers.pop(rand.randint(0, 3)), answers.pop(rand.randint(0, 2)), answers.pop(rand.randint(0, 1)), answers.pop(0)]
         embedVar = discord.Embed(title=str(triviaquestions[questionnum]), description="A. " + answerrand[0] + "\nB. " + answerrand[1] + "\nC. " + answerrand[2] + "\nD. " + answerrand[3], color=0x4287f5)
         msg = await message.channel.send(embed=embedVar)
         await msg.add_reaction('🇦')
@@ -366,6 +485,7 @@ async def on_message(message):
             await message.channel.send('You got it wrong :(')
             db["quotelosses"] = db["quotelosses"] + 1
           db["commandsresponded"] = db["commandsresponded"] - 1
+    #if the message is $blartify, blartify the text
     if message.content.startswith("$blartify"):
       virginoftheblartification = "" #this is the best variable i've ever named
       for word in message.content.split()[1:]:
@@ -409,16 +529,19 @@ async def on_message(message):
       else:
         await message.channel.send("> " + sentence)
       return
+    #if the message is $watch, give them links to watch the movies
     if message.content == "$watch":
       embedVar = discord.Embed(title="My movies", description="And where to watch them.", color=0xffff40)
       embedVar.add_field(name="Paul Blart: Mall Cop", value="Netflix: https://www.netflix.com/title/70109689", inline=False)
       embedVar.add_field(name="Paul Blart: Mall Cop 2", value="Amazon: https://www.amazon.com/Paul-Blart-Mall-Cop-2/dp/B00W96JXP6\nHulu Premium:  https://www.hulu.com/watch/3ebb25ca-26aa-48ab-8009-06fea91b6923", inline=False)
       await message.channel.send(embed=embedVar)
+    #if the message is $arrest @everyone, spook them
     if message.content == "$arrest @everyone":
       embedVar = discord.Embed(title="You are being put under citizen's arrest.", color=0xff0000)
       embedVar.set_image(url="https://cdn.discordapp.com/attachments/529558484208058370/819976083226624000/Paul-Blart-Mall-Cop-2-james-sidebar.jpg")
       await message.channel.send(embed=embedVar)
       return
+    #if the message is $arrest, arrest the mentioned user
     if message.content.startswith("$arrest "):
       try:
         mention = message.mentions[0]
@@ -441,6 +564,8 @@ async def on_message(message):
       await message.channel.send(file=discord.File('memes/wakeup.mp4'))
     if message.content == "$cum":
       await message.channel.send(file=discord.File('memes/cum.mp4'))
+    if message.content == "$hot":
+      await message.channel.send(file=discord.File('memes/hot.png'))
     if message.content == "$snake":
       await message.channel.send(file=discord.File('memes/snake.mp4'))
     if message.content.startswith("$status") and str(message.author) == "Comp Arison#1337":
@@ -530,6 +655,11 @@ async def on_message(message):
       img.save("citation.png")
       await message.channel.send(file=discord.File("citation.png"))
     if message.content.startswith("$complexmeme "):
+      for letter in message.content.lower()[5:]:
+        if letter not in [" ", "-", ",", "!", "'", "(", ")", "%", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", ":", ".", "?", '"', "*", ";"]:
+          await message.channel.send("There's an invalid character in your command.")
+          return
+      await message.channel.send("Your image is generating. <a:loading:864558897631854592>")
       global letterimg
       img = Image.open("blankdvd.png")
       offsetx = 0
@@ -561,9 +691,12 @@ async def on_message(message):
           offsetx = offsetx + 100
       img.save("meme.png")
       await message.channel.send(file=discord.File("meme.png"))
-    if message.content == "$meme" or message.content == "$help meme":
-      await message.channel.send("This command's syntax is\n$meme [text]\nIf you want more control, use ; to separate the lines manually.\nIf you want even MORE control, use $complexmeme to have the command act like a grid, starting from the top left, with ; as a separator, and spaces taking up half the normal length.")
     if message.content.startswith("$meme "):
+      for letter in message.content.lower()[5:]:
+        if letter not in [" ", "-", ",", "!", "'", "(", ")", "%", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", ":", ".", "?", '"', "*", ";"]:
+          await message.channel.send("There's an invalid character in your command.")
+          return
+      await message.channel.send("Your image is generating. <a:loading:864558897631854592>")
       previous = ""
       words = ""
       lines = [] #this list separates the input text into lines so the text doesn't go off screen.
@@ -811,7 +944,7 @@ async def on_message(message):
           await message.channel.send("Bankruptcy unfiled.")
     if message.content == "$help stock":
       #embedVar.add_field(name="", value="", inline=False)
-      embedVar = discord.Embed(title="Stock Market Help Menu", description="This is in beta.", color=0x00ff00)
+      embedVar = discord.Embed(title="Stock Market Help Menu", description="To the moon!", color=0x00ff00)
       embedVar.set_author(name="Click to visit my website.", url="https://paul-blart-mall-bot.nathanboehm.repl.co/", icon_url="https://cdn.discordapp.com/attachments/529558484208058370/818986642483183665/icon.png")
       embedVar.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/823102022953074718/stock_market.png")
       embedVar.add_field(name="$stock or $stocks", value="Gives you the latest information on the value of Blartcoins.", inline=False)
@@ -929,8 +1062,6 @@ async def on_message(message):
         else:
           await message.channel.send('You got it wrong :(')
         db["commandsresponded"] = db["commandsresponded"] - 1
-    if "i apologize" in message.content.lower() or "i'm sorry" in message.content.lower() or "im sorry" in message.content.lower():
-      await message.channel.send("That's the spirit!")
     if message.content.startswith("$give "):
       with open('variables/userbalances.txt', 'r') as userbalances:
         if message.content.split()[2].isdigit() == False and message.content.split()[2] != "max":
@@ -944,9 +1075,9 @@ async def on_message(message):
         ammount = 0
         senderinlist = False
         sendeeinlist = False
-        for line in balancesvar.split("\n"):
-          if str(message.author.id) == str(line[:len(str(message.author.id))]):
-            senderbal = int(line[len(str(message.author.id)):].split()[0])
+        for line in balancesvar.split("\n")[:-1]:
+          if str(message.author.id) == str(line.split()[0]):
+            senderbal = int(line.split()[1])
             if str(message.content.split()[2]) == "max":
               ammount = senderbal
             else:
@@ -961,12 +1092,12 @@ async def on_message(message):
                 img.save("citation.png")
                 await message.channel.send(file=discord.File("citation.png"))
                 return
-            sendermoneybalance = float(line[len(str(message.author.id)):].split()[1])
+            sendermoneybalance = float(line.split()[2])
             senderindex = balancelines.index(line)
             senderinlist = True
-          if str(message.mentions[0].id) == str(line[:len(str(message.mentions[0].id))]):
-            sendeebal = int(line[len(str(message.mentions[0].id)):].split()[0])
-            sendeemoneybalance = float(line[len(str(message.mentions[0].id)):].split()[1])
+          if str(message.mentions[0].id) == str(line.split()[0]):
+            sendeebal = int(line.split()[1])
+            sendeemoneybalance = float(line.split()[2])
             sendeeindex = balancelines.index(line)
             sendeeinlist = True
         if senderinlist == True and sendeeinlist == True:
@@ -976,7 +1107,7 @@ async def on_message(message):
           if sendeebal + ammount > 100:
             await message.channel.send("The recipient has " + str(sendeebal) + " Blartcoins. You can only have up to 100 Blartcoins.")
             return
-          if senderbal - ammount < 0:
+          if senderbal < ammount:
             await message.channel.send("You only have " + str(senderbal) + " Blartcoins.")
             return
           senderbal = senderbal - ammount
@@ -1096,7 +1227,7 @@ async def on_message(message):
       embedVar = discord.Embed(title="$citation [Written to]; [Reason]; [Penalty]", description="Generates a citation. Use ; to go to the next line.", color=0xffff00)
       embedVar.set_footer(text="Great for Paul Blart: Mall Cop roleplay.")
       await message.channel.send(embed=embedVar)
-    if message.content == "$help meme":
+    if message.content == "$meme" or message.content == "$help meme":
       embedVar = discord.Embed(title="$meme [text]", description="Generates a Paul Blart: Mall Cop DVD cover meme. If you want more control, use ; to separate the lines manually. If you want even MORE control, use $complexmeme to have the command act like a grid, starting from the top left, with ; as a separator, and spaces taking up half the normal length.", color=0xffff00)
       embedVar.set_footer(text="Tip: Use * for stars.")
       await message.channel.send(embed=embedVar)
@@ -1129,19 +1260,22 @@ async def on_message(message):
       embedVar.set_footer(text="You could say these are the Wolves of Blartstreet.")
       await message.channel.send(embed=embedVar)
     if message.content == "$help cum":
-      embedVar = discord.Embed(title="$cum", description="Secret Command 1 of 3.", color=0xffff00)
+      embedVar = discord.Embed(title="$cum", description="Secret Command 1 of 4.", color=0xffff00)
       embedVar.set_footer(text="haha funny")
       await message.channel.send(embed=embedVar)
     if message.content == "$help wakeup":
-      embedVar = discord.Embed(title="$wakeup", description="Secret Command 2 of 3.", color=0xffff00)
+      embedVar = discord.Embed(title="$wakeup", description="Secret Command 2 of 4.", color=0xffff00)
       embedVar.set_footer(text="That's Veck's face, by the way.")
       await message.channel.send(embed=embedVar)
     if message.content == "$help snake":
-      embedVar = discord.Embed(title="$snake", description="Secret Command 3 of 3.", color=0xffff00)
+      embedVar = discord.Embed(title="$snake", description="Secret Command 3 of 4.", color=0xffff00)
       embedVar.set_footer(text="Did you hear footsteps?")
       await message.channel.send(embed=embedVar)
+    if message.content == "$help hot":
+      embedVar = discord.Embed(title="$hot", description="Secret Command 4 of 4.", color=0xffff00)
+      embedVar.set_footer(text="Smokin'!")
     if message.content == "$help guide":
-      embedVar = discord.Embed(title="$guide", description="The Shopper's Guide to the West Orange Pavilion Mall is a wholly remarkable book.\nIn fact it was probably the most remarkable book ever to come out of the great publishing houses of West Orange - of which no New Jersian had ever heard either.\nNot only is it a wholly remarkable book, it is also a highly successful one - more popular than the Hypoglycemia Treatment Omnibus, better selling than Fifty More Things to do on a Segway, and more controversial than Veck Simms's trilogy of petty blockbusters Where Paul Blart Went Wrong, Some More of Paul Blart's Greatest Mistakes and Who is this Paul Blart Person Anyway?\nIn many of the more relaxed civilizations on the Outer Western Rim of the Orange County, the Shopper's Guide has already supplanted the great Encyclopedia Blartica as the standard repository of all knowledge and wisdom, for though it has many omissions and contains much that is apocryphal, or at least wildly inaccurate, it scores over the older, more pedestrian work in two important respects.\nFirst, it is slightly cheaper; and secondly it has the words DON'T MESS WITH HIS MALL! inscribed in large friendly letters on its cover.", color=0xffff00)
+      embedVar = discord.Embed(title="$guide", description="The Shopper's Guide to the West Orange Pavilion Mall is a wholly remarkable book.\nIn fact it was probably the most remarkable book ever to come out of the great publishing houses of West Orange - of which no New Jersian had ever heard either.\nNot only is it a wholly remarkable book, it is also a highly successful one - more popular than the Hypoglycemia Treatment Omnibus, better selling than Fifty More Things to do on a Segway, and more controversial than Veck Simms's trilogy of petty blockbusters Where Paul Blart Went Wrong, Some More of Paul Blart's Greatest Mistakes and Who is this Paul Blart Person Anyway?\nIn many of the more relaxed civilizations on the Outer Western Rim of Orange County, the Shopper's Guide has already supplanted the great Encyclopedia Blartica as the standard repository of all knowledge and wisdom, for though it has many omissions and contains much that is apocryphal, or at least wildly inaccurate, it scores over the older, more pedestrian work in two important respects.\nFirst, it is slightly cheaper; and secondly it has the words DON'T MESS WITH HIS MALL! inscribed in large friendly letters on its cover.", color=0xffff00)
       embedVar.set_footer(text="Look out for our next book: The Rainforest Cafe at the End of the Universe.")
       await message.channel.send(embed=embedVar)
     if message.content == "$guide":
@@ -1162,7 +1296,7 @@ async def on_message(message):
         return user == message.author and (str(reaction.emoji) == '🔢' or str(reaction.emoji) == '1️⃣' or str(reaction.emoji) == '2️⃣' or str(reaction.emoji) == '3️⃣') and reaction.message.id == msg.id
       async def guidepage():
         try:
-          reaction, user = await client.wait_for('reaction_add', timeout=300.0, check=check)
+          reaction, user = await client.wait_for('reaction_add', timeout=600.0, check=check)
         except asyncio.TimeoutError:
           pass
         else:
@@ -1353,8 +1487,78 @@ async def on_message(message):
           return
         else:
           await message.channel.send("Okay then.")
+    if message.content == "$credits":
+      embedVar = discord.Embed(title="Credits", description="Who made this and how do I give them my life savings?", color=0xffffff)
+      embedVar.set_author(name="Click to visit my website.", url="https://paul-blart-mall-bot.nathanboehm.repl.co/", icon_url="https://cdn.discordapp.com/attachments/529558484208058370/818986642483183665/icon.png")
+      embedVar.set_thumbnail(url="https://cdn.discordapp.com/attachments/529558484208058370/818990652854370314/help_menu.png")
+      embedVar.add_field(name="Paul Blart: Mall Bot", value="Created by Nathan Boehm.", inline=False)
+      embedVar.add_field(name="Website HTML", value="Created by Tajomstvo.\nModified by Nathan Boehm.", inline=False)
+      embedVar.add_field(name="Rate this bot", value="https://top.gg/bot/806772738835349514", inline=False)
+      embedVar.add_field(name="Give me money", value="https://donatebot.io/checkout/762147235935944754", inline=False)
+      embedVar.add_field(name="Subscribe", value="https://www.youtube.com/NathanBoehm", inline=False)
+      embedVar.add_field(name="GitHub", value="https://github.com/rebelderp127/Paul-Blart-Mall-Bot", inline=False)
+      embedVar.add_field(name="Replit", value="https://replit.com/@NathanBoehm/Paul-Blart-Mall-Bot", inline=False) #hi
+      embedVar.add_field(name="Contact", value="Discord: Comp Arison#1337\nEmail: nathanboehm05@gmail.com", inline=False)
+      embedVar.set_footer(text="😂 WHO DID THIS 😂")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$hangman":
+      quotenum = rand.randint(0, len(quotes) - 1)
+      answer = quotes[quotenum].split(": ")[-1].lower()
+      word = ''''''
+      for letter in answer:
+        if letter == "'" or letter == " " or letter == "." or letter == '"' or letter == "," or letter == "!" or letter == "?":
+          word = word + letter
+        else:
+          word = word + "_"
+      wrongguesses = 0
+      gamemsg = await message.channel.send("```\n" + hangmanpics[wrongguesses] + "\n" + word + "\n```")
+      async def hangmanguess(gamemsg, wrongguesses, answer, word):
+        if answer == word:
+          await gamemsg.edit(content="```\n" + hangmanpics[wrongguesses] + "\n" + word + "\n```\nYeah! You got it!")
+          return
+        else:
+          await gamemsg.edit(content="```\n" + hangmanpics[wrongguesses] + "\n" + word + "\n```")
+        def check(m):
+          return m.channel == message.channel and m.author == message.author
+        try:
+          guess = await client.wait_for('message', timeout=60.0, check=check)
+        except asyncio.TimeoutError:
+          await message.channel.send("Time's up! You took too long.")
+        else:
+          if guess.content.lower() == answer:
+            await gamemsg.edit(content="```\n" + hangmanpics[wrongguesses] + "\n" + word + "\n```")
+            await message.channel.send("Yeah! You got it!")
+            return
+          else:
+            prevword = word
+            word = ''''''
+            for letter in answer:
+              if letter == guess.content.lower():
+                word += letter
+              else:
+                word += prevword[answer.index(letter)]
+            if prevword == word:
+              wrongguesses += 1
+            if wrongguesses == 6:
+              await gamemsg.edit(content="```\n" + hangmanpics[wrongguesses] + "\n" + word + "\n```")
+              await message.channel.send("You lose. The answer was:\n" + answer)
+              return
+            await hangmanguess(gamemsg, wrongguesses, answer, word)
+      await hangmanguess(gamemsg, wrongguesses, answer, word)
+    if message.content == "$help hangman":
+      embedVar = discord.Embed(title="$hangman", description="Starts a game of Hangman with Paul Blart quotes. If you know the quote before you've guessed all the letters, type it to guess at the answer.", color=0xffff00)
+      embedVar.set_footer(text="A group of pill pushers?")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$invite":
+      embedVar = discord.Embed(title="Invite", description="https://discord.com/oauth2/authorize?client_id=806772738835349514&permissions=67632192&scope=bot", color=0xffffff)
+      embedVar.set_author(name="Click to visit my website.", url="https://paul-blart-mall-bot.nathanboehm.repl.co/", icon_url="https://cdn.discordapp.com/attachments/529558484208058370/818986642483183665/icon.png")
+      embedVar.set_footer(text="Spread the word of Blart.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$help invite":
+      embedVar = discord.Embed(title="$invite", description="Gives you a link to get Paul Blart: Mall Bot on another server.", color=0xffffff)
+      embedVar.set_footer(text="Because there can never be too many servers with this thing.")
+      await message.channel.send(embed=embedVar)
   #except:
   #  pass
-
 keep_alive()
 client.run(os.getenv("TOKEN"))
