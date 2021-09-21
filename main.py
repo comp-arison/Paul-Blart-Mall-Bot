@@ -24,13 +24,13 @@ import matplotlib.pyplot as plt
 #from matplotlib.figure import Figure
 plt.ioff()
 import emoji
-import threading
 import random as rand
 import asyncio
+from datetime import datetime, timedelta
 
 quotesperpage = 16 #how many quotes appear on each page of the quote list
 admins = ["Comp Arison#1337", "Joe Mama#7284", "ZetaPrime77#9420"]
-quotes = ["I don't drink.", "Yello-ha!", "Windershins!", "FOOT LOCKER!", "I WILL CRAWL INSIDE YOU AND LAY EGGS LIKE A BABY SPIDER!", "I don't care, I'm going double parm.", "Not today, death!", "The mind is the only weapon that doesn't need a holster.", "Safety never takes a holiday.", "Chicken chow LANE?", "Help someone today.", "No one wins with a headbutt.", "I know a lot about sharks.", '''I'll meet you on the corner of "ne" and "ver".''', "Ladies? Problem. What's the genesis?", "I do have the authority to make a citizen's arrest.", "This lemonade is insane!", "Hold the mayo.", "Veck: I would love a happy meal.", "Pahud: Peanut Blart and Jelly!", "Donna: Robocop ain't real.", "Always bet on Blart.", "That's one brown banana.", "Leon: Were you serious about that happy meal?", "Hey. Paul Blart. Ten-year veteran.", "Take a dip!", "We live as we dream. Alone.", "It's a bad day to be bad people.", "Knot-jump!", "I'm a lone cowboy.", "I believe in magic!", "Veck: Give me a gun.", "Scuba Dooby-Doo.", "Suck on that!", "Amy: Go to hell.", "Twist it. Feel the nub.", "We eat to fill a void.", "Veck: BLART! *gunshots*", "It's your classic two-bird one-stone scenario.", "I don't joke about shopper safety.", "Peanut butter. It fills the cracks of the heart.", "Right now, I'm goose egg for eight.", "Still got the Baggies!", "Hot jiggity.", '''Veck: My mom always said, "If you want something done right, waste the guy yourself." I'm paraphrasing, of course.''', "Veck: I wish I had a bat. I would bust you open, see how much candy fell out."]
+quotes = ["I don't drink.", "Yello-ha!", "Windershins!", "FOOT LOCKER!", "I WILL CRAWL INSIDE YOU AND LAY EGGS LIKE A BABY SPIDER!", "I don't care, I'm going double parm.", "Not today, death!", "The mind is the only weapon that doesn't need a holster.", "Safety never takes a holiday.", "Chicken chow LANE?", "Help someone today.", "No one wins with a headbutt.", "I know a lot about sharks.", '''I'll meet you on the corner of "ne" and "ver".''', "Ladies? Problem. What's the genesis?", "I do have the authority to make a citizen's arrest.", "That lemonade is insane!", "Hold the mayo.", "Veck: I would love a happy meal.", "Pahud: Peanut Blart and Jelly!", "Donna: Robocop ain't real.", "Always bet on Blart.", "That's one brown banana.", "Leon: Were you serious about that happy meal?", "Hey. Paul Blart. Ten-year veteran.", "Take a dip!", "We live as we dream. Alone.", "It's a bad day to be bad people.", "Knot-jump!", "I'm a lone cowboy.", "I believe in magic!", "Veck: Give me a gun.", "Scuba Dooby-Doo.", "Suck on that!", "Amy: Go to hell.", "Twist it. Feel the nub.", "We eat to fill a void.", "Veck: BLART! *gunshots*", "It's your classic two-bird one-stone scenario.", "I don't joke about shopper safety.", "Peanut butter. It fills the cracks of the heart.", "Right now, I'm goose egg for eight.", "Still got the Baggies!", "Hot jiggity.", '''Veck: My mom always said, "If you want something done right, waste the guy yourself." I'm paraphrasing, of course.''', "Veck: I wish I had a bat. I would bust you open, see how much candy fell out."]
 quotemovies = [1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 if len(quotes) != len(quotemovies):
   print("Quote mismatch!\n Length of quotes: " + str(len(quotes)) + "\nLength of quotemovies: " + str(len(quotemovies)))
@@ -38,7 +38,7 @@ if len(quotes) != len(quotemovies):
 paulwords = ["paul", "palm", "qualm", "yawn", "pail", "pale", "pom", "tom", "god", "tod", "scott", "pre", "shit", "pie", "pon", "price", "poop", "tracle", "tracl", "pol", "dick", "pussy", "au", "nathan", "soul", "awe", "piss", "pant", "david", "jacob", "robert", "rachel", "jay", "pre", "fool", "penis"]
 blartwords = ["blart", "card", "earth", "cart", "dart", "fart", "mart", "part", "heart", "dark", "start", "narc", "lard", "thwart", "wart", "guard", "car", "bart", "blurt", "blur", "burn", "art", "hard", "nox", "brew", "bath", "wat", "bout", "bitch", "bare", "drown", "bruh", "break", "fort", "block", "blown", "blow", "bet", "hulk", "boehm", "back", "tard", "be", "stock", "bit", "swan", "buck", "sus", "holl", "hol"]
 mallwords = ["mall", "call", "fall", "moon", "ball", "bell", "tall", "small", "hall", "jail", "lol", "wall", "yall", "y'all", "all", "odd", "man", "jar", "mell", "ass", "mean", "meal", "troll", "doll", "wack", "damn", "mark", "dow", "nigg", "tell", "sell", "al", "vagina"]
-copwords = ["cop", "pop", "mop", "bot", "top", "bop", "fap", "gap", "hop", "cat", "wap", "cap", "cough", "con", "lot", "fuck", "kill", "corp", "cum", "cun", "come", "comp", "com", "keep", "show", "clip", "cock", "clock", "cuck"]
+copwords = ["cop", "pop", "mop", "bot", "top", "bop", "fap", "gap", "hop", "cat", "wap", "cap", "cough", "con", "lot", "fuck", "kill", "corp", "cum", "cun", "come", "comp", "com", "keep", "show", "clip", "cock", "clock", "cuck", "ccp"]
 
 censoredpaulwords = ["paul", "shit", "dick", "pussy", "piss", "penis"]
 censoredblartwords = ["blart", "bitch", "retard", "tit"]
@@ -46,8 +46,8 @@ censoredmallwords = ["mall", "ass", "damn", "nigg", "vagina"]
 censoredcopwords = ["cop", "fuck", "cum", "cock", "cunt", "nazi", "kill"]
 
 #All questions must have 4 corresponding answers. The first answer in the set is the right one.
-triviaquestions = ["How many stores are in the West Orange Pavilion Mall?", "What is Veck's last name?", "What song was Paul rocking to in Paul Blart: Mall Cop?", "What food is Vincent from Paul Blart: Mall Cop 2 allergic to?", "What does Muhrtell from Paul Blart: Mall Cop 2 eat during his lunch break?", "Where does Maya work in Paul Blart: Mall Cop?", "How long does Paul Blart get for lunch?", "When was Paul Blart: Mall Cop released?", "When was Paul Blart: Mall Cop 2 released?", "What car does Amy own?"]
-triviaanswers = ["223", "38", "204", "46", "Simms", "Claus", "Vill", "Smith", "Detroit Rock City", "Taking Care Of Business", "Get Up", "Here It Goes Again", "Oatmeal", "Strawberries", "Peanuts", "Seafood", "An old Banana", "Oatmeal", "A raw egg", "Ice cubes", "Foot Locker", "Dunkin' Donuts", "GameStop", "Subway", "Half an hour. But he eats in 20, which leaves him 5 minutes for social time, 5 minutes to get refocused.", "Half an hour. But he eats in 15, which leaves him 10 minutes for social time, 5 minutes to get refocused.", "20 minutes. But he eats in 10, which leaves him 5 minutes for social time, 5 minutes to get refocused.", "40 minutes. But he eats in 20, which leaves him 10 minutes for social time, 10 minutes to get refocused.", "January 16, 2009", "March 27, 2009", "April 17, 2009", "December 9, 2008", "April 17, 2015", "November 26, 2015", "January 16, 2015", "May 8, 2015", "'65 Mustang", "P-51 Mustang", "P-65 Mustang", "None of the above."]
+triviaquestions = ["How many stores are in the West Orange Pavilion Mall?", "What is Veck's last name?", "What song was Paul rocking to in Paul Blart: Mall Cop?", "What food is Vincent from Paul Blart: Mall Cop 2 allergic to?", "What does Muhrtell from Paul Blart: Mall Cop 2 eat during his lunch break?", "Where does Maya work in Paul Blart: Mall Cop?", "How long does Paul Blart get for lunch?", "When was Paul Blart: Mall Cop released?", "When was Paul Blart: Mall Cop 2 released?", "What car does Amy own?", "What is Amy's phone number?"]
+triviaanswers = ["223", "38", "204", "46", "Simms", "Claus", "Vill", "Smith", "Detroit Rock City", "Taking Care Of Business", "Get Up", "Here It Goes Again", "Oatmeal", "Strawberries", "Peanuts", "Seafood", "An old Banana", "Oatmeal", "A raw egg", "Ice cubes", "Foot Locker", "Dunkin' Donuts", "GameStop", "Subway", "Half an hour. But he eats in 20, which leaves him 5 minutes for social time, 5 minutes to get refocused.", "Half an hour. But he eats in 15, which leaves him 10 minutes for social time, 5 minutes to get refocused.", "20 minutes. But he eats in 10, which leaves him 5 minutes for social time, 5 minutes to get refocused.", "40 minutes. But he eats in 20, which leaves him 10 minutes for social time, 10 minutes to get refocused.", "January 16, 2009", "March 27, 2009", "April 17, 2009", "December 9, 2008", "April 17, 2015", "November 26, 2015", "January 16, 2015", "May 8, 2015", "'65 Mustang", "P-51 Mustang", "P-65 Mustang", "None of the above.", "555-0178", "555-1839", "015-1952", "116-2009"]
 
 hangmanpics = [
 '''
@@ -119,6 +119,7 @@ def plural(number):
   else:
     return "s"
 letterimg = ""
+#lastreboot = datetime.now()
 #secondsuntiltick = 60
 stocknum = 1
 newprice = 0
@@ -133,14 +134,19 @@ stockpattern = 1
 prevstockpattern = 0
 waitforpattern = 5
 
-def stocktick():
+async def stocktick():
   global prevstockpattern
   global stocknum
   global stockpattern
   global waitforpattern
   global newprice
   global graph
-  threading.Timer(60.0, stocktick).start()
+  #threading.Timer(60.0, stocktick).start()
+  alarmindex = 0
+  for alarm in db["channelswithalarm"]:
+    if datetime.today().replace(day=datetime.today().day, hour=int(db["alarmtimes"][alarmindex].split()[0]), minute=int(db["alarmtimes"][alarmindex].split()[1]), second=0, microsecond=0) + timedelta(days=0) == datetime.today().replace(day=datetime.today().day, hour=datetime.today().hour, minute=datetime.today().minute, second=0, microsecond=0) + timedelta(days=0):
+      await client.get_channel(alarm).send("This is your daily reminder to watch Paul Blart: Mall Cop.")
+    alarmindex += 1
   goodpercent = False
   while goodpercent == False:
     if stocknum == waitforpattern:
@@ -189,10 +195,11 @@ def stocktick():
       final2.save("graph.png")
     else:
       stockpattern = rand.randint(1, 5)
-stocktick()
+  await asyncio.sleep(60)
+  await stocktick()
 
 intents = discord.Intents().all()
-intents.presences = False
+#intents.presences = False
 client = discord.Client(intents=intents)
 
 @client.event
@@ -202,6 +209,7 @@ async def on_ready():
   await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=str(len(client.guilds)) + " servers. $help"))
   channel = client.get_channel(823908777802989599)
   await channel.purge()
+  await stocktick()
 
 @client.event
 async def on_message(message):
@@ -250,6 +258,7 @@ async def on_message(message):
       embedVar.add_field(name="$help stock", value="Gives information about Blartcoins and the Blart Market.", inline=False)
       embedVar.add_field(name="$guide", value="A virtual book of everything you need to know about me.", inline=False)
       embedVar.add_field(name="$hangman", value="Play a classic game of Hangman with Paul Blart quotes.", inline=False)
+      embedVar.add_field(name="$alarm [UTC time]", value="Sets a daily alarm that reminds you to watch Paul Blart: Mall Cop.", inline=False)
       embedVar.add_field(name="$invite", value="I give you a link to invite me to other servers.", inline=False)
       embedVar.set_footer(text="There are also some secret commands. They're hidden somewhere, but I'm not telling!")
       await message.channel.send(embed=embedVar)
@@ -274,7 +283,7 @@ async def on_message(message):
         global serverfoundinquotelists
         serverfoundinquotelists = False
         global quotesfound
-        for line in str(quotedata.read()).split("\n"):
+        for line in str(quotedata.read()).split("\n")[:-1]:
           if str(message.guild.id) == str(line.split()[0]):
             for quote in quotes[quotesperpage * (pagenum - 1):quotesperpage * pagenum]:
               if str(quotes.index(quote)) in line.split()[1:]:
@@ -1558,6 +1567,55 @@ async def on_message(message):
       embedVar = discord.Embed(title="$invite", description="Gives you a link to get Paul Blart: Mall Bot on another server.", color=0xffffff)
       embedVar.set_footer(text="Because there can never be too many servers with this thing.")
       await message.channel.send(embed=embedVar)
+    if message.content == "$alarm clear":
+      newchannelswithalarm = []
+      newalarmtimes = []
+      newalarmindex = 0
+      for alarm in db["channelswithalarm"]:
+        if alarm != message.channel.id:
+          newchannelswithalarm.append(alarm)
+          newalarmtimes.append(db["alarmtimes"][newalarmindex])
+        newalarmindex += 1
+      db["channelswithalarm"] = newchannelswithalarm
+      db["alarmtimes"] = newalarmtimes
+      await message.channel.send("Cleared all alarms in this channel.")
+      return
+    if message.content.startswith("$alarm "):
+      channelswithalarm = db["channelswithalarm"]
+      alarmtimes = db["alarmtimes"]
+      if len(message.content.split()) == 2 or len(message.content.split()) == 3:
+        try:
+          if len(message.content.split()) == 3 and ":" in message.content.split()[1] and int(message.content.split()[1].split(":")[0]) <= 12 and int(message.content.split()[1].split(":")[0]) >= 0 and int(message.content.split()[1].split(":")[1]) <= 60 and int(message.content.split()[1].split(":")[1]) >= 0:
+            if message.content.split()[2].lower() == "am":
+              time = [int(message.content.split()[1].split(":")[0]), int(message.content.split()[1].split(":")[1])]
+              await message.channel.send("Alarm set for " + message.content.split()[1] + " AM (UTC).")
+            elif message.content.split()[2].lower() == "pm":
+              time = [int(message.content.split()[1].split(":")[0]) + 12, int(message.content.split()[1].split(":")[1])]
+              await message.channel.send("Alarm set for " + message.content.split()[1] + " PM (UTC).")
+            else:
+              message.channel.send("The time you gave is invalid. An example of a valid time would be 11:45 PM.")
+              return
+          elif ":" in message.content.split()[1] and int(message.content.split()[1].split(":")[0]) <= 24 and int(message.content.split()[1].split(":")[0]) >= 0 and int(message.content.split()[1].split(":")[1]) <= 60 and int(message.content.split()[1].split(":")[1]) >= 0:
+            time = [int(message.content.split()[1].split(":")[0]), int(message.content.split()[1].split(":")[1])]
+            await message.channel.send("Alarm set for " + message.content.split()[1] + " (UTC).")
+          else:
+            message.channel.send("The time you gave is invalid. An example of a valid time would be 23:45.")
+            return
+        except:
+          message.channel.send("The time you gave is invalid. An example of a valid time would be 23:45 or 11:45 PM.")
+          return
+        else:
+          channelswithalarm.append(int(message.channel.id))
+          db["channelswithalarm"] = channelswithalarm
+          alarmtimes.append(str(time[0]) + " " + str(time[1]))
+          db["alarmtimes"] = alarmtimes
+    if message.content == "$help alarm" or message.content == "$alarm":
+      embedVar = discord.Embed(title="$alarm [UTC time]", description='Sets a daily alarm that reminds this channel to watch Paul Blart: Mall Cop. Make sure to use UTC time. Search "UTC converter" to find the right time you want.', color=0xffffff)
+      embedVar.set_footer(text="Use $alarm clear to clear the alarms in that channel.")
+      await message.channel.send(embed=embedVar)
+    if message.content == "$database" and str(message.author) in admins:
+      for key in db.keys():
+        print(key + " = " + str(db[str(key)]))
   #except:
   #  pass
 keep_alive()
