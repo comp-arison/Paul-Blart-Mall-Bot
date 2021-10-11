@@ -6,7 +6,6 @@ I'll gladly accept any code if someone updates it for me.
 TODO:
 Start looking for website domains
 Make a permanent fix to the stock market data loss bug
-Endless quiz command
 Potential store items:
 Additional stock market statistics like how much you would make if you sold at that moment
 '''
@@ -1022,10 +1021,10 @@ async def on_message(message):
       while randans1 == answer:
         randans1 = rand.randint(1, 99)
       randans2 = rand.randint(1, 99)
-      while randans2 == answer:
+      while randans2 == answer or randans2 == randans1:
         randans2 = rand.randint(1, 99)
       randans3 = rand.randint(1, 99)
-      while randans3 == answer:
+      while randans3 == answer or randans3 == randans2 or randans3 == randans1:
         randans3 = rand.randint(1, 99)
       answers = [answer, randans1, randans2, randans3]
       answerrand = [answers.pop(rand.randint(0, 3)), answers.pop(rand.randint(0, 2)), answers.pop(rand.randint(0, 1)), answers.pop(0)]
